@@ -1,0 +1,10 @@
+PROGRAM PrintHello(INPUT, OUTPUT);
+USES 
+  DOS;
+BEGIN {PrintHello}
+  WRITELN(GetEnv‘REQUEST_METHOD’);
+  WRITELN(GetEnv‘QUERY_STRING’);
+  WRITELN;
+  
+END. {PrintHello}
+
