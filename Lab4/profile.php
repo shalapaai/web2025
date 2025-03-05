@@ -4,7 +4,7 @@
         <title>Profile</title>
     </head>
     <body>
-        <img src="/putin.jpg" width="30" height="30" alt="Avatar">
+        <img src="/putin.jpg" width="80" height="80" alt="Avatar">
         <h4>Владимир Путин</h4>
         <p>Привет, я президент нашей великой страны, Вовка Путин</p>
         <p>6 постов</p>
