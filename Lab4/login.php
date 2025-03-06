@@ -4,13 +4,15 @@
         <title>Login</title>
     </head>
     <body>
-        <img src="/8335_lk.png" width="300" height="300" alt="Login Image">
         <h1>ВОЙТИ</h1>
+        <img src="/5bfdcd0203419440a00f80467930301c.png" alt="Login Image">
+        
         <p>Электронная почта</p>
         <input type="text" name="Электронная почта" placeholder="Вводите почту">
         <p>Введите электропочту в формате *****@***.**</p>
         <p>Пароль</p>
-        <input type="text" name="Пароль" placeholder="Ввод пароль">
+        <input type="password" name="Пароль" placeholder="Ввод пароль">
+        <img src="/eye-off.png" alt="Eye">
         <input type="submit">
     </body>
 </html>
