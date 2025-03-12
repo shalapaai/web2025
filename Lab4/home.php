@@ -6,6 +6,7 @@
     <body>
         <img src="/c1ebddes-1920.jpg" alt="Avatar">
         <p>Василий Гальперов</p>
+        <img src="/edit.png" alt="Edit">
         <img src="/mountain.jpg" alt="Image">
         <img src="/like.png" alt="Like">
         <input type="submit" value="Like">
