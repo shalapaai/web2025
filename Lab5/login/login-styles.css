@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap');
+
+.global-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.start-image {
+    margin: 50px 50px 0 -50px;
+    display: inline-block;
+}
+
+.heading {
+    font-size: 140px;
+    font-family: "Golos Text";
+    margin: 0px 0px -15px;
+    position: absolute;
+}
+
+.login-image {
+    width: 462px;
+    height: 462px;
+    margin: 70px 0px 0px 70px;
+}
+
+.login-data {
+    display: inline-block; 
+    margin-top: 110px;
+}
+
+.mail-pass {
+    font-family: "Golos Text";
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.comment {
+    font-family: "Golos Text";
+    font-size: 13px;
+    color: #808080;
+    margin-top: 5px;
+    margin-bottom: 16px;
+}
+
+.input {
+    width: 343px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #F2F3F5;
+    background-color: #F2F3F5;
+    display: block; 
+    margin-right: -45px;
+    font-family: "Golos Text";
+    font-size: 15px;
+    padding-left: 12px;
+    padding-right: 12px;
+    transition: border 0.3 ease;
+}
+
+.input:focus {
+    border: 1px solid #3F8AE0;
+    outline: none;
+}
+
+.input-error {
+    border: 1px solid #E64646;
+}
+
+.input-info {
+    display: block;
+    font: 13px/1.2 "Golos Text";
+    color: #808080;
+}
+
+.input-info-error {
+    color:#E64646;
+}
+
+.eye {
+    width: 24px;
+    display: inline-block;
+}
+
+.button {
+    background-color: #222222;
+    color: #FFFFFF;
+    padding: 14.5px;
+    font-family: "Golos Text";
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 32px;
+    display: block; 
+    border: 2px solid #222222;
+    transition: border, background-color 0.3 ease;
+    cursor: pointer;
+    width: 368px;
+}
+
+.button:focus {
+    border: 2px solid #3F8AE0
+}
+
+.button:disabled {
+    border: 2px solid #B4B4B4;
+    background-color: #B4B4B4;
+}
