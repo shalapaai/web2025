@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-body{
+body {
     font-family: "Golos UI"; 
     display: inline-block;
 }
@@ -28,7 +28,7 @@ body{
 
 .menu-of-home {
     height: auto;
-    width: 80px;
+    width: 72px;
     border: 1px;
     
 }
