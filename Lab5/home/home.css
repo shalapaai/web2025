@@ -1,0 +1,71 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: "Golos UI", sans-serif; 
+}
+
+.post{
+    margin: auto;
+    margin-top: 36px;
+}
+
+.name-in-post {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: -0.15px;
+}
+
+.number-of-likes {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    letter-spacing: -0.15px;
+}
+
+.description-of-post{
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    letter-spacing: -0.15px;
+    margin-top: 16px;
+}
+
+.time-of-post {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: -0.15px;
+    color: #22222280;
+    margin-top: 10px;
+}
+
+.like {
+    width: 16px;
+}
+
+.post {
+    max-width: 475px;
+}
+
+.main-information {
+    margin-top: 10px;
+}
+
+.likes-of-post {
+    margin-top: 16px;
+    width: 68px;
+    height: 30px;
+    background-color: #2222220D;
+    padding-top: 6px;
+    padding-left: 12px;
+    border-radius: 8px;
+}
+
+.avatar{
+    width: 32px;
+}

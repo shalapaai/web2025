@@ -1,31 +1,67 @@
 <!DOCTYPE html>
 <html lang="ru">
-    <head>
-        <title>Домашняя страница</title>
-        <link href="/home/style.css" rel="stylesheet">
-    </head>
-    <body>
-        <div class="menu">
-            <div class="menu-icon-wrapper menu-icon-wrapper-active menu-icon menu-icon-home"></div>
-            <div class="menu-icon-wrapper menu-icon menu-icon-user"></div>
-            <div class="menu-icon-wrapper menu-icon menu-icon-plus"></div>
+<head>
+    <title>Главная</title>
+    <link rel="stylesheet" href="home.css">
+    <link href="/font.css" rel="stylesheet">
+</head>
+<body>
+    <div class="menu-of-home">
+        <div class="image-home">
+            <img src="marks/go-home.svg" alt="Вернуться">
         </div>
-
+        <div class="image-my-account">
+            <img src="marks/my_account.svg" alt="Мой аккаунт">
+        </div>
+        <div class="image-of-new-post">
+            <img src="marks/new-post.svg" alt="Новый пост"> 
+        </div>
+    </div>
+    <div class="post">
+        <div class="head-of-post">
+            <img class="avatar" src="Avatar.png" alt="Аватар">
+            <span class="name-in-post">Ваня Денисов</span>
+            <img class="edit" src="marks/edit.svg" alt="Изменить">
+        </div>
+        <div class="main-information">
+            <div class="photo-of-post">
+                <img src="post-photo.png" alt="Фото из поста" width="475">
+            </div>
+            <div class="likes-of-post">
+                <img class="like" src="marks/like.svg" alt="Лайк">
+                <span class="number-of-likes">203</span>
+            </div>
+            <div class="information-of-post">
+                <p class="description-of-post">Так красиво сегодня на улице! Настоящая зима)) 
+                    Вспоминается Бродский: «Поздно ночью, в уснувшей долине, на самом дне, в городке, 
+                    занесенном снегом по ручку двери...» 
+                </p>
+                <p class="time-of-post">2 часа назад</p>
+            </div>
+        </div>
         <div class="post">
-            <div class="head">
-                <img src="/images/Avatar.png" class="avatar" alt="Аватар">
-                <p class="text">Ваня Денисов</p>
-                <img src="/images/edit.svg" class="edit" alt="Изменение">
+            <div class="head-of-post">
+                <img class="avatar" src="Avatar.png" alt="Аватар">
+                <span class="name-in-post">Ваня Денисов</span>
+                <img class="edit" src="marks/edit.svg" alt="Изменить">
             </div>
-            <img src="/images/mountain.jpg" class= "post-image" alt="Пост">
-            <div class="likes">
-                <img src="/images/like.svg" alt="Реакции" title="Реакции" width="14px" height="14px">
-                <span>203</span>
+            <div class="main-information">
+                <div class="photo-of-post">
+                    <img src="post-photo.png" alt="Фото из поста" width="475">
+                </div>
+                <div class="likes-of-post">
+                    <img class="like" src="marks/like.svg" alt="Лайк">
+                    <span class="number-of-likes">203</span>
+                </div>
+                <div class="information-of-post">
+                    <p class="description-of-post">Так красиво сегодня на улице! Настоящая зима)) 
+                        Вспоминается Бродский: «Поздно ночью, в уснувшей долине, на самом дне, в городке, 
+                        занесенном снегом по ручку двери...» 
+                    </p>
+                    <p class="time-of-post">2 часа назад</p>
+                </div>
             </div>
-            <p class="content-text">Так красиво сегодня на улице! Настоящая зима)) Вспоминается 
-            Бродский: «Поздно ночью, в уснувшей долине, на самом дне, в гор...</p>
-            <p class="else-text">еще</p>
-            <p class="time-text">2 часа назад</p>
         </div>
-    </body>
+   </div>
+</body>
 </html>

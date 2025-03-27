@@ -1,25 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
-    <head>
-        <title>Profile</title>
-        <link href="/profile/style.css" rel="stylesheet">
-    </head>
-    <body>
-        <div class="page">
-            <img src="/images/big-avatar.png" class="avatar" alt="Аватар">
-            <h1 class="user-name">Ваня Денисов</h1>
-            <p class="bio">Привет! Я системный аналитик в ACME :) Тут моя 
-            жизнь только для самых классных!</p>
-            <div class="post-number">
-                <img src="/images/image.svg" alt="Посты" title="Посты">
+<head>
+    <title>Профиль</title>
+    <link rel="stylesheet" href="profile.css">
+    <link href="/font.css" rel="stylesheet">
+</head>
+<body>
+    <div class="menu-of-home">
+        <div class="image-home">
+            <img src="marks/go-home.svg" alt="Вернуться">
+        </div>
+        <div class="image-my-account">
+            <img src="marks/my_account_active.svg" alt="Мой аккаунт">
+        </div>
+        <div class="image-of-new-post">
+            <img src="marks/new-post.svg" alt="Новый пост"> 
+        </div>
+    </div>
+    <div class="posts">
+        <div class="about-user">
+            <div class="user-name">
+                <img class="avatar-in-profile" src="Avatar-in-profile.png" alt="Аватар">
+                <p class="name-of-user">Ваня Денисов</p>
+                <p class="description-of-user">Привет! Я системный аналитик в ACME :) Тут моя жизнь только для самых классных!</p>
+            </div>
+            <div class="number-of-post">
+                <img src="marks/Posts.svg" alt="Посты">
                 <span>43 поста</span>
             </div>
-            <img src="/images/Frame1.jpg" class="post-image" alt="Пост">
-            <img src="/images/Frame2.jpg" class="post-image" alt="Пост">
-            <img src="/images/Frame3.jpg" class="post-image" alt="Пост">
-            <img src="/images/Frame4.jpg" class="post-image" alt="Пост">
-            <img src="/images/Frame5.jpg" class="post-image" alt="Пост">
-            <img src="/images/Frame6.jpg" class="post-image" alt="Пост">
         </div>
-    </body>
+        <div class="all-posts">
+            <img src="posts_images/photo1.png" alt="Фото из поста">
+            <img src="posts_images/photo2.png" alt="Фото из поста">
+            <img src="posts_images/photo3.png" alt="Фото из поста">
+            <img src="posts_images/photo4.png" alt="Фото из поста">
+            <img src="posts_images/photo5.png" alt="Фото из поста">
+            <img src="posts_images/photo6.png" alt="Фото из поста">
+        </div>
+    </div>
+</body>
 </html>
