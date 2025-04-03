@@ -8,7 +8,7 @@
             
     $number = $_POST['number'];
     $number = intval($number);
-            
+
     if ($number < 0) {
         echo "Факториал отрицательного числа не определен.";
     } else {

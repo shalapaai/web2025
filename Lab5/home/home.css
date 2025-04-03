@@ -18,6 +18,7 @@ body{
     font-size: 14px;
     line-height: 18px;
     letter-spacing: -0.15px;
+    color: #222222;
 }
 
 .number-of-likes {
@@ -33,6 +34,7 @@ body{
     line-height: 18px;
     letter-spacing: -0.15px;
     margin-top: 16px;
+    color: #222222;
 }
 
 .time-of-post {
@@ -57,15 +59,42 @@ body{
 }
 
 .likes-of-post {
+    display: inline;
+    width: fit-content;
     margin-top: 16px;
-    width: 68px;
-    height: 30px;
     background-color: #2222220D;
     padding-top: 6px;
+    padding-bottom: 6px;
+    padding-right: 12px;
     padding-left: 12px;
     border-radius: 8px;
 }
 
 .avatar{
     width: 32px;
+}
+
+.menu-of-home {
+    padding-top: 40px;
+    padding-left: 16px;
+    height: 100%;
+    width: 72px;
+    border-right: 1px solid #2222220D;
+    position: fixed;
+}
+
+.lenta {
+    padding-top: 76px;
+}
+
+.image-my-account {
+    padding-top: 16px;
+}
+
+.image-of-new-post {
+    padding-top: 16px;
+}
+
+.photo-of-post {
+    margin-bottom: 16px;
 }

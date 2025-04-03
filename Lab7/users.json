@@ -1,0 +1,18 @@
+[
+  {
+      "id": 1,
+      "name": "Ваня Денисов",
+      "avatar": "image/vanya.jpg",
+      "email": "vanya@example.com",
+      "city": "Йошкар-Ола",
+      "registered_at": 1735816569
+  },
+  {
+      "id": 2,
+      "name": "Лиза Дёмина",
+      "avatar": "image/liza.jpg",
+      "email": "liza@example.com",
+      "city": "Санкт-Петербург",
+      "registered_at": 1738581369 
+    }
+]

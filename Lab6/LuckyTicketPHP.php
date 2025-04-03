@@ -2,7 +2,7 @@
     $first = $_POST["first"];
     $sec = $_POST["second"];
 
-    echo "Первый билет " . $first . "<br>" . " Второй билет " . $sec . "<br>Счастиливые билеты: ";
+    echo "Первый билет " . $first . "</br>" . " Второй билет " . $sec . "</br>Счастиливые билеты: ";
 
     if ((strlen($first) != 6) || (strlen($sec) != 6)) {
         echo "Некорректный ввод";
@@ -18,6 +18,18 @@
             $first = strval($firstInt);
             $sec = strval($secInt);
             
+            if (strlen($first) != 6) {
+                while (strlen($first) != 6) {
+                    $first = '0' . $first;
+                }
+            }
+
+            if (strlen($sec) != 6) {
+                while (strlen($sec) != 6) {
+                    $sec = '0' . $sec;
+                }
+            }
+
             $digit[0] = intval(substr($first, 0, 1));
             $digit[1] = intval(substr($first, 1, 1));
             $digit[2] = intval(substr($first, 2, 1));

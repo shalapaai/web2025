@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-body {
+body{
     font-family: "Golos UI"; 
     display: inline-block;
 }
@@ -27,13 +27,26 @@ body {
 }
 
 .menu-of-home {
-    height: auto;
+    padding-top: 40px;
+    padding-left: 16px;
+    height: 100%;
     width: 72px;
-    border: 1px;
+    border-right: 1px solid #2222220D;
+    position: fixed;
+}
+
+.image-my-account {
+    padding-top: 16px;
+}
+
+.image-of-new-post {
+    padding-top: 16px;
 }
 
 .posts {
+    margin-top: 97px;
     max-width: 1630px;
+    position: relative;
     margin-left: 17%;
 }
 
@@ -49,18 +62,21 @@ body {
 }
 
 .avatar-in-profile {
-    border-radius: 20px;
     width: 123px;
     height: 123px;
+    border-radius: 20px;
 }
 
 .number-of-post {
+    justify-content: center;
     margin: auto;
     margin-top: 12px;
-    width: 101px;
+    width: fit-content;
     height: 30px;
     border-radius: 6px;
     background-color: #F2F3F5;
-    padding-top: 6px;
-    padding-left: 6px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
