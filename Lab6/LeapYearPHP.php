@@ -4,7 +4,7 @@
     }
             
     $year = $_POST["year"];
-    echo 'Входные данные ' . $year . "<br>";
+    echo 'Входные данные ' . $year . "</br>";
     echo 'Выходные данные ';
     if (isLeapYear($year)) {
         echo 'YES';

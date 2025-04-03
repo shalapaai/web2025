@@ -24,12 +24,6 @@
                 }
             }
 
-            if (strlen($sec) != 6) {
-                while (strlen($sec) != 6) {
-                    $sec = '0' . $sec;
-                }
-            }
-
             $digit[0] = intval(substr($first, 0, 1));
             $digit[1] = intval(substr($first, 1, 1));
             $digit[2] = intval(substr($first, 2, 1));

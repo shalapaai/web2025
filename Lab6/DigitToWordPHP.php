@@ -18,7 +18,7 @@
 
     $digit = $_POST["digit"];
 
-    echo "Входные данные " . $digit . "<br>";
+    echo "Входные данные " . $digit . "</br>";
 
     $digit = digitToWord($digit);
     echo " Выходные данные " . $digit;
