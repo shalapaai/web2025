@@ -27,7 +27,7 @@ $user_posts = array_filter($posts, function($post) use ($user_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профиль <?= htmlspecialchars($current_user['name']) ?></title>
+    <title>Профиль</title>
     <link rel="stylesheet" href="styles3.css">
 </head>
 <body>

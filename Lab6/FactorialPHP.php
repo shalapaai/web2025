@@ -1,5 +1,5 @@
 <?php
-    function factorial($n) {
+    function factorial(int $n): int {
         if ($n <= 1) {
             return 1;
         }

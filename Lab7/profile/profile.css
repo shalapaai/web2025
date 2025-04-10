@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: "Golos UI"; 
+    display: inline-block;
+}
+
+.user-name {
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 32px;
+    letter-spacing: -0.25px;
+    color: #222222;
+}
+
+.description-of-user {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    letter-spacing: -0.15px;
+    color: #222222;
+    margin-top: 10px;
+}
+
+.menu-of-home {
+    padding-top: 40px;
+    padding-left: 16px;
+    height: 100%;
+    width: 72px;
+    border-right: 1px solid #2222220D;
+    position: fixed;
+}
+
+.image-my-account {
+    padding-top: 16px;
+}
+
+.image-of-new-post {
+    padding-top: 16px;
+}
+
+.posts {
+    margin-top: 97px;
+    max-width: 1630px;
+    position: relative;
+    margin-left: 17%;
+}
+
+.about-user {
+    text-align: center;
+    max-width: 360px;
+    margin-left: 24%;
+    margin-bottom: 45px;
+}
+
+.name-of-user {
+    margin-top: 20px;
+}
+
+.avatar-in-profile {
+    width: 123px;
+    height: 123px;
+    border-radius: 20px;
+}
+
+.number-of-post {
+    justify-content: center;
+    margin: auto;
+    margin-top: 12px;
+    width: fit-content;
+    height: 30px;
+    border-radius: 6px;
+    background-color: #F2F3F5;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
