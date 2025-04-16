@@ -27,7 +27,6 @@
         foreach ($posts as $post) {
             if ($current_user == $post['user_id']) {
                 $current_post = $post;
-                $post_images.push($current_post['image']);
                 array_push($post_images, $current_post['image']);
             }
         }

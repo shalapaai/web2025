@@ -1,57 +1,26 @@
 [
   {
     "id": "731a9e0c-3959-4da2-9445-285ea0046cd5",
-    "user_id": 1,
+    "autor_id": 1,
     "content": "Так красиво сегодня на улице! Настоящая зима!...",
-    "image": "/profile/posts_images/photo1.png",
+    "images": "/profile/posts_images/photo1.png",
     "likes": 203,
     "created_at": 1735902969
   },
   {
     "id": "10f6c444-aa29-4578-860b-732f2ad361fb",
-    "user_id": 1,
+    "autor-id": 1,
     "content": "Сегодня был замечательный день! Солнце светило...",
-    "image": "/profile/posts_images/photo1.png",
+    "images": ["/profile/posts_images/photo2.png", "/profile/posts_images/photo3.png", "/profile/posts_images/photo4.png", 
+    "/profile/posts_images/photo5.png", "/profile/posts_images/photo6.png"],
     "likes": 150,
     "created_at": 1735813269
   },
   {
-    "id": "47d72e14-663e-4457-b22a-d2473672ed48",
-    "user_id": 1,
-    "content": "Так красиво сегодня на улице! Настоящая зима!...",
-    "image": "/profile/posts_images/photo1.png",
-    "likes": 123,
-    "created_at": 1735902969
-  },
-  {
-    "id": "f6715618-4b29-4a52-9528-fa096b7077bc",
-    "user_id": 1,
-    "content": "Так красиво сегодня на улице! Настоящая зима!...",
-    "image": "/profile/posts_images/photo1.png",
-    "likes": 214,
-    "created_at": 1735902969
-  },
-  {
-    "id": "9d6568ca-a41d-40f7-83a9-e01c224c390c",
-    "user_id": 1,
-    "content": "Так красиво сегодня на улице! Настоящая зима!...",
-    "image": "/profile/posts_images/photo1.png",
-    "likes": 116,
-    "created_at": 1735902969
-  },
-  {
-    "id": "8e1fef0b-2e9d-49bc-bcc5-632136824d7f",
-    "user_id": 1,
-    "content": "Так красиво сегодня на улице! Настоящая зима!...",
-    "image": "/profile/posts_images/photo1.png",
-    "likes": 546,
-    "created_at": 1735902969
-  },
-  {
     "id": "9f797eea-0e00-42e1-9d5c-548b8708cd28",
-    "user_id": 2,
+    "autor-id": 2,
     "content": "Так красиво сегодня на улице! Настоящая зима!...",
-    "image": "/profile/posts_images/photo1.png",
+    "images": "/profile/posts_images/photo7.png",
     "likes": 840,
     "created_at": 1735902969
   }

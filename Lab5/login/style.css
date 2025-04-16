@@ -2,11 +2,17 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Golos UI", sans-serif
 }
 
-body{
-    font-family: "Golos UI", sans-serif; 
+.content {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 }
+
 .title {
     font-weight: 700;
     font-size: 140px;
@@ -72,4 +78,5 @@ body{
 
 .form {
     display: block;
+    margin-left: 107px;
 }
