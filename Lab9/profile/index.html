@@ -3,39 +3,34 @@
 <head>
     <title>Профиль</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="/font.css" rel="stylesheet">
 </head>
 <body>
-    <div class="menu-of-home">
-        <div class="menu-of-home__image-home">
-            <img src="marks/go-home.svg" alt="Вернуться">
+    <div class="page">
+        <div class="menu">
+            <img class="menu__icon" src="../image/go-home.svg" alt="иконка домой"> 
+            <img class="menu__icon" src="../image/my_account_active.svg" alt="иконка профиля">
+            <img class="menu__icon" src="../image/new-post.svg" alt="иконка добавить">
         </div>
-        <div class="menu-of-home__image-my-account">
-            <img src="marks/my_account_active.svg" alt="Мой аккаунт">
-        </div>
-        <div class="menu-of-home__image-of-new-post">
-            <img src="marks/new-post.svg" alt="Новый пост"> 
-        </div>
-    </div>
-    <div class="content">
-        <div class="about-user">
-            <div class="user-main-info">
-                <img class="user-main-info__avatar-in-profile" src="Avatar-in-profile.png" alt="Аватар">
-                <p class="user-main-info__name-of-user">Ваня Денисов</p>
-                <p class="user-main-info__description-of-user">Привет! Я системный аналитик в ACME :) Тут моя жизнь только для самых классных!</p>
+        <div class="content">
+            <div class="about-user">
+                <div class="user-main-info">
+                    <img class="user-main-info__avatar-in-profile" src="../image/Avatar-in-profile.png" alt="Аватар">
+                    <p class="user-main-info__name-of-user">Ваня Денисов</p>
+                    <p class="user-main-info__description-of-user">Привет! Я системный аналитик в ACME :) Тут моя жизнь только для самых классных!</p>
+                </div>
+                <div class="number-of-post">
+                    <img class="number-of-post__icon-of-gallery" src="../image/Posts.svg" alt="Посты">
+                    <span class="number-of-post__counter">43 поста</span>
+                </div>
             </div>
-            <div class="number-of-post">
-                <img class="number-of-post__icon-of-gallery" src="marks/Posts.svg" alt="Посты">
-                <span class="number-of-post__counter">43 поста</span>
+            <div class="all-posts">
+                <img class="all-posts__image" src="../image/photo1.png" alt="Фото из поста">
+                <img class="all-posts__image" src="../image/photo2.png" alt="Фото из поста">
+                <img class="all-posts__image" src="../image/photo3.png" alt="Фото из поста">
+                <img class="all-posts__image" src="../image/photo4.png" alt="Фото из поста">
+                <img class="all-posts__image" src="../image/photo5.png" alt="Фото из поста">
+                <img class="all-posts__image" src="../image/photo6.png" alt="Фото из поста">
             </div>
-        </div>
-        <div class="all-posts">
-            <img src="posts_images/photo1.png" alt="Фото из поста">
-            <img src="posts_images/photo2.png" alt="Фото из поста">
-            <img src="posts_images/photo3.png" alt="Фото из поста">
-            <img src="posts_images/photo4.png" alt="Фото из поста">
-            <img src="posts_images/photo5.png" alt="Фото из поста">
-            <img src="posts_images/photo6.png" alt="Фото из поста">
         </div>
     </div>
 </body>

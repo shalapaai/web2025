@@ -6,16 +6,18 @@
         <link href="font.css" rel="stylesheet">
     </head>
     <body>
-        <h1 class="title">Войти</h1>
-        <div class="content">
-            <img src="main-first-photo.png" alt="Главное фото" class="login-photo">
-            <form action="" class="form">
+        <h1 class="title">Войти</h1>   
+        <div class="content">             
+            <img class="login-photo" src="../image/main-first-photo.png" alt="Главное фото">        
+            <form class="form" action="">
                 <label class="form__name-of-input" for="email">Электропочта</label>
                 <input id="email" type="email" class="form__user-information">
-                <span class="form__input-info">Введите электропочту в формате *****@***.**</span>
+                <p class="form__input-info">Введите электропочту в формате *****@***.**</p>
                 <label class="form__name-of-input" for="email">Пароль</label>
-                <input id="password" type="password" class="form__user-information">
-                <img class="form__eye-off" src="marks/Eye-off.svg" alt="Скрыть">
+                <div class="form__password">
+                    <input class="form__user-information password" id="password" type="password">
+                    <img class="form__eye-off" src="marks/Eye-off.svg" alt="Скрыть">
+                </div>
                 <input type="submit" class="form__registration-button">
             </form>
         </div>

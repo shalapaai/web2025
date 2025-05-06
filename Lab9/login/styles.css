@@ -5,37 +5,47 @@
     font-family: "Golos UI", sans-serif
 }
 
-.content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
 .title {
     font-weight: 700;
     font-size: 140px;
     line-height: 180px;
     letter-spacing: -1.5px;
     color: #222222;
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: 209px;
+    top: 21px;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 126px;
+    left: 300px;
 }
 
 .login-photo {
     width: 462px;
+    height: 501px;
+}
+
+.form {
+    margin-left: 107px;
 }
 
 .form__name-of-input {
-    margin-top: 16px;
     font-weight: 400;
     font-size: 15px;
     line-height: 18px;
     letter-spacing: -0.15px;
     color:#222222;
     display: block;
+    margin-bottom: 5px;
 }
 
 .form__user-information {
-    margin-top: 5px;
     width: 343px;
     height: 44px;
     border-radius: 10px;
@@ -46,6 +56,10 @@
     background-color: #F2F3F5;
     color: #222222;
     display: block;
+}
+
+.password {
+    padding-right: 48px;
 }
 
 .form__user-information:focus{
@@ -59,6 +73,20 @@
     letter-spacing: -0.08px;
     color: #808080;
     margin-top: 5px;
+    margin-bottom: 16px;
+}
+
+.form__password {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.form__eye-off {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    left: 307px;
 }
 
 .form__registration-button{
@@ -73,9 +101,5 @@
     font-size: 16px;
     line-height: 19.2px;
     display: block;
-}
-
-.form {
-    display: block;
-    margin-left: 107px;
+    margin-top: 32px;
 }
