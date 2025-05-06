@@ -1,5 +1,5 @@
 create database blog;
 show databases;
 use blog;
-CREATE TABLE post (id INT UNSIGED AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255) NOT NULL, image VARCHAR(100) NOT NULL)
+CREATE TABLE post (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255) NOT NULL, image VARCHAR(100) NOT NULL)
 select * from post;

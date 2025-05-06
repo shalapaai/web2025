@@ -1,27 +1,90 @@
 [
   {
     "id": "731a9e0c-3959-4da2-9445-285ea0046cd5",
-    "autor_id": 1,
+    "autor_id": "0874af11-e313-4e09-8c10-b233f293bf70",
     "content": "Так красиво сегодня на улице! Настоящая зима!...",
-    "images": "/profile/posts_images/photo1.png",
+    "images": ["/profile/posts_images/photo1.png"],
     "likes": 203,
     "created_at": 1735902969
   },
   {
     "id": "10f6c444-aa29-4578-860b-732f2ad361fb",
-    "autor-id": 1,
+    "autor_id": "0874af11-e313-4e09-8c10-b233f293bf70",
     "content": "Сегодня был замечательный день! Солнце светило...",
-    "images": ["/profile/posts_images/photo2.png", "/profile/posts_images/photo3.png", "/profile/posts_images/photo4.png", 
-    "/profile/posts_images/photo5.png", "/profile/posts_images/photo6.png"],
+    "images": ["/profile/posts_images/photo2.png"],
     "likes": 150,
     "created_at": 1735813269
   },
   {
-    "id": "9f797eea-0e00-42e1-9d5c-548b8708cd28",
-    "autor-id": 2,
-    "content": "Так красиво сегодня на улице! Настоящая зима!...",
-    "images": "/profile/posts_images/photo7.png",
-    "likes": 840,
-    "created_at": 1735902969
+    "id": "0c42cbc0-4958-4f85-a24d-c9b9ee59e9d1",
+    "autor_id": "0874af11-e313-4e09-8c10-b233f293bf70",
+    "content": "FDSF",
+    "images": ["/profile/posts_images/photo3.png"],
+    "likes": 150,
+    "created_at": 1735813269
+  },
+  {
+    "id": "06f63580-9ff4-4227-a6c0-ae04ee7608e4",
+    "autor_id": "0874af11-e313-4e09-8c10-b233f293bf70",
+    "content": "САЫАФЫ",
+    "images": ["/profile/posts_images/photo4.png"],
+    "likes": 150,
+    "created_at": 1735813269
+  },
+  {
+    "id": "95c49d03-1c21-41ca-a393-c9c63a7e5392",
+    "autor_id": "0874af11-e313-4e09-8c10-b233f293bf70",
+    "content": "ПУМ",
+    "images": ["/profile/posts_images/photo5.png"],
+    "likes": 150,
+    "created_at": 1735813269
+  },
+  {
+    "id": "933731a6-8f12-401d-9ef3-a9592c92e124",
+    "autor_id": "0874af11-e313-4e09-8c10-b233f293bf70",
+    "content": "ЧИКС",
+    "images": ["/profile/posts_images/photo6.png"],
+    "likes": 150,
+    "created_at": 1735813269
+  },
+  {
+    "id": "d3304198-063b-4cb5-97bb-e1f614c6dbcc",
+    "autor_id": "c49163a6-7bf6-49db-8914-9a959671c6bc",
+    "content": "БЭМПС",
+    "images": ["/profile/posts_images/photo6.png"],
+    "likes": 150,
+    "created_at": 1735813269
+  },
+  {
+    "id": "fe563450-1dd5-4d42-89f5-ad6dc7e9771c",
+    "autor_id": "c49163a6-7bf6-49db-8914-9a959671c6bc",
+    "content": "dasfaf",
+    "images": ["/profile/posts_images/photo6.png"],
+    "likes": 150,
+    "created_at": 1735813269
+  },
+  {
+    "id": "f3bf4ed8-9430-4b5b-b94d-a456d1911b4f",
+    "autor_id": "c49163a6-7bf6-49db-8914-9a959671c6bc",
+    "content": "rgfjgj",
+    "images": ["/profile/posts_images/photo6.png"],
+    "likes": 150,
+    "created_at": 1735813269
+  },
+  {
+    "id": "d8d54bef-ab5c-4e9c-b7d4-4697dd098312",
+    "autor_id": "c49163a6-7bf6-49db-8914-9a959671c6bc",
+    "content": "dfg",
+    "images": ["/profile/posts_images/photo6.png"],
+    "likes": 150,
+    "created_at": 1735813269
+  },
+  {
+    "id": "a2f94262-aef6-437a-8bbd-55608c819f2c",
+    "autor_id": "c49163a6-7bf6-49db-8914-9a959671c6bc",
+    "content": "123",
+    "images": ["/profile/posts_images/photo6.png"],
+    "likes": 150,
+    "created_at": 1735813269
   }
 ]

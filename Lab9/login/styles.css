@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Golos UI", sans-serif
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 140px;
+    line-height: 180px;
+    letter-spacing: -1.5px;
+    color: #222222;
+}
+
+.login-photo {
+    width: 462px;
+}
+
+.form__name-of-input {
+    margin-top: 16px;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    letter-spacing: -0.15px;
+    color:#222222;
+    display: block;
+}
+
+.form__user-information {
+    margin-top: 5px;
+    width: 343px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #F2F3F5;
+    padding: 13px 12px;
+    transition: border 0.3 ease;
+    outline: none;
+    background-color: #F2F3F5;
+    color: #222222;
+    display: block;
+}
+
+.form__user-information:focus{
+    border: 1px solid #3F8AE0;
+}
+
+.form__input-info{
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.08px;
+    color: #808080;
+    margin-top: 5px;
+}
+
+.form__registration-button{
+    width: 343px;
+    height: 48px;
+    border-radius: 10px;
+    padding-left: 16px;
+    padding-right: 16px;
+    color: #FFFFFF;
+    background-color: #222222;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19.2px;
+    display: block;
+}
+
+.form {
+    display: block;
+    margin-left: 107px;
+}

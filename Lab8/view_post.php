@@ -1,7 +1,7 @@
 <?php
     require_once 'include/database.php'
     $connection = connectToDatabase();
-    $posts = getPostsFromDatabae($connection);
+    $posts = getPostsFromDatabase($connection);
 ?>
 
 

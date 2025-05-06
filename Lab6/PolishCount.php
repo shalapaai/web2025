@@ -4,15 +4,9 @@
         <title>Ввод данных</title>
     </head>
     <body>
-        <form method="POST">
-            <input type="text" name="expression">
+    <form method="POST" action="PolishCountPHP.php">
+            <input type="text" name="polishString">
             <button type="submit">Отправить</button>
-        </form>
-
-        <?php            
-            $expression = $_POST['expression'];
-            $number = intval($number);
-            
-        ?>
+        </form>   
     </body>
 </html>

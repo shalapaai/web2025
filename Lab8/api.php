@@ -15,9 +15,9 @@ $act = isset($_HET['act']) ? $_GET['act'] : null;
 
 switch ($act) {
     case ACT_UPLOADER:
-        echo uploadDta();
+        echo uploadData();
         break;
     default:
-      echo getResponse(status: STATUS_ERROR, message: MESSAGE_INVALID_REQUEST_METHOD);
+      echo getResponse(status: STATUS_ERROR, message: MESSAGE_INVALIDE_ACT);
       die();
 }

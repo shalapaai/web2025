@@ -6,7 +6,7 @@ const STATUS_ERRIR = 'error';
 const STATUS_OK = 'ok';
 
 const MESSAGE_INVALIDE_REQUEST_METHOD = 'invalid method';
-const MESSAGE_INVALIDE_REQUEST_ACT = 'invalid act';
+const MESSAGE_INVALIDE_ACT = 'invalid act';
 const MESSAGE_INVALIDE_TITLE = 'invalid title';
 const MESSAGE_INVALIDE_IMAGE = 'invalid image';
 const MESSAGE_INVALIDE_SAVE_TITLE = 'invalid save image';
