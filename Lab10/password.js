@@ -6,7 +6,7 @@ function createSecurePassword(length) {
         symbols: '!@#$%^&*()_"№;:'
     };
 
-    // Гарантируем минимум по одному символу из каждой категории
+    // Генерируем минимум по одному символу из каждого множества
     let password = [
         ...Object.values(charSets).map(set => set[Math.floor(Math.random() * set.length)])            
     ];
