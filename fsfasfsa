@@ -1,0 +1,100 @@
+//--------"ГЕНЕРАТОР НА ЦИФРОВОМ ФИЛЬТРЕ"----------
+#include <mega8.h>
+#include <math.h>
+
+#pragma uchar+
+
+void main(void);
+void Init(void);
+interrupt [TIM1_OVF] void Timer1_ovf(void);
+
+#pragma opt-
+ float x1=0,x2=0,y=0;
+ const float dwTone =1000.0;     //частота основного тона,Гц
+ const float dwFrequency =16000.0; //частота дискретизации
+ const float A =112.0;//амплитуда
+ float k;
+
+ 
+//----------
+ void main(void) 
+ {
+ Init();
+
+ #asm("sei")//разрешить прерывания
+
+ for(;;)
+  {
+  #asm("sleep")
+  }
+ }
+//----------
+
+
+
+
+
+//----------
+void Init(void)
+ {
+ k = 2*cos(2*PI*dwTone/dwFrequency);
+ x1 =0;  //начальные значения
+ x2 = -A*sin(2*PI*dwTone/dwFrequency);
+
+ DDRC=0x00;
+ PORTC=0xFF;
+
+ DDRB=0x00;
+ PORTB=0xFF;
+
+ DDRD=0xff;
+ PORTD=0x00;
+
+ //Timer(s)/Counter(s) Interrupt(s) initialization
+ TIMSK=0x04;//разрешить прерывания от таймеров
+
+ TCNT1H=0xFC;
+ TCNT1L=0x37;
+ TCCR1B=1;
+
+ //разрешить режим засыпания
+ MCUCR =1<<SE;
+
+ // Watchdog Timer initialization
+ #pragma optsize-
+ WDTCR=(1<<WDCE);
+ WDTCR=(1<<WDCE)|(1<<WDE)|(1<<WDP2)|(1<<WDP1);
+ }
+//----------
+
+
+
+
+
+//----------
+ interrupt [TIM1_OVF] void Timer1_ovf(void)
+ {
+ TCCR1B=0;//останов таймера 1
+
+ //задержка для точной коррекции частоты
+ // #asm ("nop")   
+     
+ TCNT1H=0xFC;
+ TCNT1L=0x37;
+ TCCR1B=1;//старт таймера 1     
+ #asm("wdr")                         
+ y = k*x1-x2;             
+ x2 = x1;                 
+ //x1 = y;
+ if(y>127.0)
+ x1=127.0;
+ else
+ x1=y;
+ if(y<(-127.0))
+ x1=-127.0;
+ else
+ x1=y;
+ 
+ PORTD=y+127;                   
+ }
+//----------

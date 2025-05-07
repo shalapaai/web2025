@@ -14,9 +14,7 @@ function generatePassword(length){
 
     for (let i = 4; i < length; i++) {
         password = password + allChars[Math.floor(Math.random() * allChars.length)];
-    }
-
-    
+    }    
     return password;
 }
 
