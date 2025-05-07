@@ -1,12 +1,13 @@
 const users = [
     { id: 1, name: "Alice" },
     { id: 2, name: "Bob" },
-    { id: 3, name: "Charlie" },
-    { id: 3}
+    { id: 3, name: "Charlie" }
 ];
   
-const names = users.map(function(user) {
-    return user.name;
-});
+const names = users.map(
+    function(user) {
+        return user.name;
+    }
+);
 
 console.log(names);  

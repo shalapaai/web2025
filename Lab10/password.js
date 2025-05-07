@@ -1,28 +1,24 @@
-function generatePassword(length) {
-    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
-    const symbols = '!@#$%^&*()_+"№;:?';
-  
-    const allChars = lowercase + uppercase + numbers + symbols;
-  
+function createSecurePassword(length) {
+    const charSets = {
+        lower: 'abcdefghijklmnopqrstuvwxyz',
+        upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        digits: '0123456789',
+        symbols: '!@#$%^&*()_"№;:'
+    };
+
+    // Гарантируем минимум по одному символу из каждой категории
     let password = [
-        lowercase[Math.floor(Math.random() * lowercase.length)],
-        uppercase[Math.floor(Math.random() * uppercase.length)],
-        numbers[Math.floor(Math.random() * numbers.length)],
-        symbols[Math.floor(Math.random() * symbols.length)]
+        ...Object.values(charSets).map(set => set[Math.floor(Math.random() * set.length)])            
     ];
-  
-    for (let i = 4; i < length; i++) {
+
+    // Добавляем остальные случайные символы
+    const allChars = Object.values(charSets).join('');
+    while (password.length < length) {
         password.push(allChars[Math.floor(Math.random() * allChars.length)]);
     }
-  
-    // Перемешиваем символы
-    password = password.sort(() => Math.random() - 0.5).join('');
-  
-    return password;
-  }
-  
-// Примеры использования
-console.log(generatePassword(12));
-console.log(generatePassword(8));
+
+    return password.join('');
+}
+
+console.log(createSecurePassword(12));
+console.log(createSecurePassword(16));

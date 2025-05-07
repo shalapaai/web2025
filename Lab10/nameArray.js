@@ -1,10 +1,13 @@
-let usersArr = [
+const users = [
     { id: 1, name: "Alice" },
     { id: 2, name: "Bob" },
     { id: 3, name: "Charlie" }
 ];
-// Результат: ["Alice", "Bob", "Charlie"]
+  
+const names = users.map(
+    function(user) {
+        return user.name;
+    }
+);
 
-let names = usersArr.map(user => user.name);
-
-console.log(names);
+console.log(names);  
