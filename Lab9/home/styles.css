@@ -88,12 +88,11 @@ body {
     border: 0;
     background-color: #2222220D;
     border-radius: 8px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
     margin-top: 16px;
     margin-bottom: 16px;
+    display: flex;
+    justify-content: center;;
+    align-items: center;
 }
 
 .post__like-image {

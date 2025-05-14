@@ -2,10 +2,10 @@ function uniqueElements(arr) {
     const result = {};
     
     for (const key of arr) {
-        const item = String(key);
-        (result[item] === undefined)
-        ? result[item] = 1
-        : result[item] += 1;
+        const keyStr = String(key);
+        (!result[keyStr])
+        ? result[keyStr] = 1
+        : result[keyStr] += 1;
     }
     
     return result;

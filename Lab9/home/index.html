@@ -3,13 +3,13 @@
     <head>
         <title>Домашняя страница</title>
         <meta charset='UTF-8'>
-        <link href="style.css" rel="stylesheet">      
+        <link href="styles.css" rel="stylesheet">      
     </head>
     <body>
         <div class="page">
             <div class="menu">
-                <img class="menu__icon" src="../image/go-home_active.svg" alt="иконка домой"> 
-                <img class="menu__icon" src="../image/my_account.svg" alt="иконка профиля">
+                <a href="../home"><img class="menu__icon" src="../image/go-home_active.svg" alt="иконка домой"></a>
+                <a href="../profile"><img class="menu__icon" src="../image/my_account.svg" alt="иконка профиля"></a>
                 <img class="menu__icon" src="../image/new-post.svg" alt="иконка добавить">
             </div>
             <div class="container">
@@ -23,7 +23,7 @@
                     <img class="post__image" src="../image/post-photo.png" alt="фото поста"> 
                     <button class="post__like-button">
                         <img class="post__like-image" src="../image/like.svg" alt="символ лайка"> 
-                        <span class="post__like-count">203</span>
+                        <p class="post__like-count">203</p>
                     </button>
                     <p class="post__text">Так красиво сегодня на улице! Настоящая зима)) Вспоминается Бродский: «Поздно ночью, в уснувшей долине, 
                     на самом дне, в городке, занесенном снегом по ручку двери...»</p>

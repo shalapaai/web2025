@@ -43,31 +43,25 @@ body{
     margin-top: 97px;
 }
 
-.about-user {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 .user-main-info {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.user-main-info__avatar-in-profile {
+.avatar-in-profile {
     width: 123px;
     height: 123px;
     border-radius: 16px;
     margin-bottom: 20px;
 }
 
-.user-main-info__name-of-user {
+.name-of-user {
     font-weight: 500;
     font-size: 32px;
 }
 
-.user-main-info__description-of-user {
+.description-of-user {
     font-size: 15px;
     max-width: 361px;
     text-align: center;
@@ -98,8 +92,8 @@ body{
 
 .all-posts {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
+    flex-wrap: wrap;
     width: 1000px;
 }
 

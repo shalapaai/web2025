@@ -5,20 +5,22 @@
         <link href="styles.css" rel="stylesheet">
         <link href="font.css" rel="stylesheet">
     </head>
-    <body>
-        <h1 class="title">Войти</h1>   
-        <div class="content">             
-            <img class="login-photo" src="../image/main-first-photo.png" alt="Главное фото">        
-            <form class="form" action="">
-                <label class="form__name-of-input" for="email">Электропочта</label>
-                <input id="email" type="email" class="form__user-information">
-                <p class="form__input-info">Введите электропочту в формате *****@***.**</p>
-                <label class="form__name-of-input" for="email">Пароль</label>
-                <div class="form__password">
-                    <input class="form__user-information password" id="password" type="password">
-                    <img class="form__eye-off" src="marks/Eye-off.svg" alt="Скрыть">
+    <body>  
+        <div class="content">  
+            <div class="login-sidebar">
+                <h1 class="login-sidebar__title">Войти</h1>           
+                <img class="login-sidebar__photo" src="../image/main-first-photo.png" alt="Главное фото">        
+            </div>
+            <form class="login-form" action="">
+                <label class="login-form__name-of-input" for="email">Электропочта</label>
+                <input class="login-form__user-information" id="email" type="email">
+                <p class="login-form__input-info">Введите электропочту в формате *****@***.**</p>
+                <label class="login-form__name-of-input" for="email">Пароль</label>
+                <div class="login-form__password">
+                    <input class="login-form__user-information password" id="password" type="password">
+                    <img class="login-form__eye-off" src="marks/Eye-off.svg" alt="Скрыть">
                 </div>
-                <input type="submit" class="form__registration-button">
+                <input class="login-form__submit-button" type="submit">
             </form>
         </div>
     </body>

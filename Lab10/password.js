@@ -20,5 +20,5 @@ function createSecurePassword(length) {
     return password.join('');
 }
 
-console.log(createSecurePassword(12));
+console.log(createSecurePassword(6));
 console.log(createSecurePassword(16));

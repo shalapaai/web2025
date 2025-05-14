@@ -2,22 +2,20 @@
 <html lang="ru">
 <head>
     <title>Профиль</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="page">
         <div class="menu">
-            <img class="menu__icon" src="../image/go-home.svg" alt="иконка домой"> 
-            <img class="menu__icon" src="../image/my_account_active.svg" alt="иконка профиля">
+            <a href="../home"><img class="menu__icon" src="../image/go-home.svg" alt="иконка домой"></a>
+            <a href="../profile"><img class="menu__icon" src="../image/my_account_active.svg" alt="иконка профиля"></a>
             <img class="menu__icon" src="../image/new-post.svg" alt="иконка добавить">
         </div>
         <div class="content">
-            <div class="about-user">
-                <div class="user-main-info">
-                    <img class="user-main-info__avatar-in-profile" src="../image/Avatar-in-profile.png" alt="Аватар">
-                    <p class="user-main-info__name-of-user">Ваня Денисов</p>
-                    <p class="user-main-info__description-of-user">Привет! Я системный аналитик в ACME :) Тут моя жизнь только для самых классных!</p>
-                </div>
+            <div class="user-main-info">
+                <img class="avatar-in-profile" src="../image/Avatar-in-profile.png" alt="Аватар">
+                <p class="name-of-user">Ваня Денисов</p>
+                <p class="description-of-user">Привет! Я системный аналитик в ACME :) Тут моя жизнь только для самых классных!</p>
                 <div class="number-of-post">
                     <img class="number-of-post__icon-of-gallery" src="../image/Posts.svg" alt="Посты">
                     <span class="number-of-post__counter">43 поста</span>
