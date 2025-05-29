@@ -3,7 +3,7 @@
       "id": "0874af11-e313-4e09-8c10-b233f293bf70",
       "name": "Ваня Денисов",
       "status": "Привет! Я системный аналитик в ACME 🙂 Тут моя жизнь только для самых классных!",
-      "user_avatar": "/profile/avatar_images/vanya.png",
+      "user_avatar": "/Avatar-in-profile.png",
       "email": "vanya@email.com",
       "password": "123",
       "registered_at": 1735816569
@@ -12,10 +12,9 @@
       "id": "c49163a6-7bf6-49db-8914-9a959671c6bc",
       "name": "Лиза Барбоскина",
       "status": "Привет, я Лиза",
-      "user_avatar": "/profile/avatar_images/liza.png",
+      "user_avatar": "/liza.jpg",
       "email": "liza@email.com",
       "password": "321",
-      "post_cnt": 1,
       "registered_at": 1735816569
     }
 ]

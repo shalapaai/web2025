@@ -1,0 +1,12 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.post {
+    border: 1px solid;
+    padding: 20px;
+    margin-bottom: 10px;
+}

@@ -1,16 +1,16 @@
 <?php
-function polish_note($input_string) {
-    $tokens = explode(' ', $input_string);
+function polish_note($input) {
+    $elements = explode(' ', $input);
     $stack = array();
     
-    foreach ($tokens as $token) {
-        if (is_numeric($token)) {
-            array_push($stack, intval($token));
+    foreach ($elements as $element) {
+        if (is_numeric($element)) {
+            array_push($stack, intval($element));
         } else {
             $b = array_pop($stack);
             $a = array_pop($stack);
             
-            switch ($token) {
+            switch ($element) {
                 case '+':
                     array_push($stack, $a + $b);
                     break;
@@ -23,8 +23,7 @@ function polish_note($input_string) {
                 
             }
         }
-    }
-    
+    }   
     return array_pop($stack);
 }
 

@@ -1,12 +1,18 @@
 <?php
-    $users_json = file_get_contents("../data/users.json", true);
-    $users = json_decode($users_json, true);
-    $posts_json = file_get_contents("../data/posts.json", true);
-    $posts = json_decode($posts_json, true);
+    require_once 'post.php';
+    require_once '../script.php';
     
+    $dbdata = connectDatabase();
+    $users = getUsers($dbdata);
+    $users = array_values($users);
+    $posts = getPosts($dbdata);
+    $posts = array_values($posts);
+    $images = getImages($dbdata);
+    $images = array_values($images);
+
     $filterByUserId = $_GET['id'] ?? null;
 
-    $isValidUser = $filterByUserId ? in_array($filterByUserId, array_column($users, 'id')) : false;
+    $isValidUser = $filterByUserId ? in_array($filterByUserId, array_column($users, 'id')) : false;   
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -26,12 +32,12 @@
             <img class="menu__icon" src="../image/new-post.svg" alt="иконка добавить">
         </div>
         <div class="container">  
-        <?php
-            require_once 'post.php';
+        <?php            
             foreach ($posts as $post) {
-                $user_data = $users[array_search($post["author_id"], array_column($users, "id"))];     
+                $user_data = $users[array_search($post["author_id"], array_column($users, "id"))];
+                $images_data = $images[array_search($post["id"], array_column($images, "post_id"))];
                 if (!$filterByUserId || !$isValidUser || $user_data['id'] == $filterByUserId) {
-                    renderPost($post, $user_data);
+                    renderPost($post, $user_data, $images_data);
                 }
             }
         ?>    

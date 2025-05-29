@@ -1,14 +1,19 @@
 <?php 
-    $users_json = file_get_contents("../data/users.json", true);
-    $users = json_decode($users_json, true);
-    $posts_json = file_get_contents("../data/posts.json", true);
-    $posts = json_decode($posts_json, true);
+    require_once 'profile.php';
+    require_once '../script.php';
+
+    $dbdata = connectDatabase();
+    $users = getUsers($dbdata);
+    $users = array_values($users);
+    $posts = getPosts($dbdata);
+    $posts = array_values($posts);
+    $images = getImages($dbdata);
+    $images = array_values($images);
 
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
     } else {
-        header('Location: ../home');
-        exit();
+        header('Location: ../home');        
     }
 
     foreach ($users as $user) {
@@ -19,11 +24,13 @@
 
     if ($user_data == null) {
         header('Location: ../home');
-        exit();
     }
-
+    
     $user_posts = array_values(array_filter($posts, fn($post) => $post['author_id'] == $id));
     $user_posts = array_values($user_posts);
+
+    $user_images = array_filter($images, fn($image) => in_array($image['post_id'], array_column($user_posts, 'id')));
+    $user_images = array_values($user_images);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -44,8 +51,7 @@
         </div>
         <div class="content">
             <?php 
-                require_once 'profile.php';
-                renderProfile($user_posts, $user_data);
+                renderProfile($user_posts, $user_data, $user_images);
             ?>
         </div>
     </div>
