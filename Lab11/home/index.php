@@ -63,7 +63,7 @@
     </div>
 
     <script src="js/addButton1.js"></script>
-    <script src="js/slider.js"></script>
+    <script src="js/slider1.js"></script>
     <script src="js/modalWindow.js"></script>
 </body>
 </html>

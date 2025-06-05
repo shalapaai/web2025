@@ -23,6 +23,6 @@
             </form>
         </div>
         <script src="js/passViss.js"></script>
-        <script src="js/inCheck.js"></script>
+        <script src="js/inCheck1.js"></script>
     </body>
 </html>

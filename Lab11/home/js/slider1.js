@@ -27,6 +27,16 @@ document.addEventListener('DOMContentLoaded', function() {
             updateCounter();
         });
 
+        sliderLeft?.addEventListener('click', function() {
+            let currentIndex = [...images].findIndex(img => !img.classList.contains('hidden'));
+
+            images[currentIndex].classList.add('hidden');
+            const nextIndex = (currentIndex - 1 + images.length) % images.length;
+            images[nextIndex].classList.remove('hidden');
+            
+            updateCounter();
+        });
+
         updateCounter();
     });
 });

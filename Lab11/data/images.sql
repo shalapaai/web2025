@@ -20,6 +20,14 @@ VALUES (
         '/photo3.png'
     ),
     (
+        '0c42cbc0-4958-4f85-a24d-c9b9ee59e9d1',
+        '/photo4.png'
+    ),
+    (
+        '0c42cbc0-4958-4f85-a24d-c9b9ee59e9d1',
+        '/photo5.png'
+    ),
+    (
         '06f63580-9ff4-4227-a6c0-ae04ee7608e4',
         '/photo4.png'
     ),
