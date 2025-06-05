@@ -1,0 +1,142 @@
+@font-face {
+    font-family: "Golos UI";
+    src: url("./golos-ui_regular.woff") format("woff");
+    font-weight: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Golos UI", sans-serif
+}
+
+body {
+    display: flex;
+    justify-content: center;  
+    align-items: center;  
+    min-height: 100vh; 
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    position: absolute;
+}
+
+.login-sidebar {
+    position: relative;
+    width: 552px;
+    height: 607px;
+}
+
+.login-sidebar__title {
+    font-weight: 700;
+    font-size: 140px;
+    line-height: 180px;
+    letter-spacing: -1.5px;
+    color: #222222;
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+}
+
+.login-sidebar__photo {
+    width: 462px;
+    height: 501px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.login-form {
+    margin-left: 107px;
+    margin-top: 90px;
+}
+
+.login-form__name-of-input {
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    letter-spacing: -0.15px;
+    color:#222222;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-form__user-information {
+    width: 343px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #F2F3F5;
+    padding: 13px 12px;
+    transition: border 0.3 ease;
+    outline: none;
+    background-color: #F2F3F5;
+    color: #222222;
+    display: block;
+}
+
+.login-form__user-information:focus {
+    border: 1px solid #3F8AE0;
+}
+
+.login-form__input-info {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: -0.08px;
+    color: #808080;
+    margin-top: 5px;
+    margin-bottom: 16px;
+}
+
+.login-form__password {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.login-form__eye {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    left: 307px;
+    cursor: pointer;
+}
+
+.login-form__submit-button {
+    width: 343px;
+    height: 48px;
+    border-radius: 10px;
+    padding-left: 16px;
+    padding-right: 16px;
+    color: #FFFFFF;
+    background-color: #222222;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19.2px;
+    display: block;
+    margin-top: 32px;
+}
+
+.login-form__errors {
+    display: block;
+    width: 343px;
+    border-radius: 10px;
+    border: none;
+    background: #FFECEC;
+    color: #740000;
+    margin-bottom: 16px;
+    padding: 12px;
+}
+
+.input-error {
+    border-color: #E64646;
+}
+
+.hidden {
+    display: none;
+}

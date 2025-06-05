@@ -47,7 +47,9 @@
             <a href="../profile/?id=<?php echo $users[0]['id'] ?>">
                 <img class="menu__icon" src="../image/my_account_active.svg" alt="иконка профиля">
             </a>
-            <img class="menu__icon" src="../image/new-post.svg" alt="иконка добавить">
+            <a href="../create">
+                <img class="menu__icon" src="../image/new-post.svg" alt="иконка добавить">
+            </a>
         </div>
         <div class="content">
             <?php 

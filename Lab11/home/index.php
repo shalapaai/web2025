@@ -18,7 +18,7 @@
 <html lang="ru">
 <head>
     <title>Главная</title>
-    <link href="styles.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
     <div class="page">
@@ -29,7 +29,9 @@
             <a href="../profile/?id=<?php echo $users[0]['id'] ?>">
                 <img class="menu__icon" src="../image/my_account.svg" alt="иконка профиля">
             </a>
-            <img class="menu__icon" src="../image/new-post.svg" alt="иконка добавить">
+            <a href="../create">
+                <img class="menu__icon" src="../image/new-post.svg" alt="иконка добавить">
+            </a>
         </div>
         <div class="container">  
         <?php            
@@ -40,13 +42,28 @@
                 }));
                 $images_data = array_values($images_data);
                 if (!$filterByUserId || !$isValidUser || $user_data['id'] == $filterByUserId) {
-                    renderPost($post, $user_data, $images_data);
+                    renderPost($post, $users, $user_data, $images_data);
                 }
             }
         ?>    
         </div>
     </div>
-    <script src="js/addButton.js"></script>
+
+    <!-- Модальное окно -->
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <img class="close-modal" src="../image/close.svg" alt="закрыть">
+            <div class="modal-slider">        
+                <div class="modal-images"></div>
+                <img class="modal-slider-left" src="../image/slider_button_left.svg" alt="слайдер">
+                <img class="modal-slider-right" src="../image/slider_button_right.svg" alt="слайдер">
+            </div>
+            <div class="modal-counter"></div>
+        </div>
+    </div>
+
+    <script src="js/addButton1.js"></script>
     <script src="js/slider.js"></script>
+    <script src="js/modalWindow.js"></script>
 </body>
 </html>

@@ -1,0 +1,36 @@
+@font-face {
+    font-family: "Golos UI";
+    src: url("../golos-ui_regular.woff") format("woff");
+    font-weight: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Golos UI", sans-serif;
+}
+
+.page {
+    display: flex;
+    flex-direction: row;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
+    box-sizing: content-box;
+    border: 1px solid #2222220D;
+}
+
+.menu__icon {
+    width: 40px;
+    height: 40px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-bottom: 16px;
+}

@@ -35,3 +35,17 @@ VALUES (
         'd3304198-063b-4cb5-97bb-e1f614c6dbcc',
         '/liza.jpg'
     );
+
+    INSERT INTO
+    `image` (
+        `post_id`,
+        `image_path`
+    )
+    VALUES (
+            '731a9e0c-3959-4da2-9445-285ea0046cd5',
+            '/photo3.png'
+        ),
+        (
+            '731a9e0c-3959-4da2-9445-285ea0046cd5',
+            '/photo4.png'
+        );
