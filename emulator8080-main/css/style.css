@@ -1,0 +1,120 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+table {
+    border-collapse: collapse;
+    font-family: monospace;
+    display: inline;
+}
+
+/* .input-table {
+    width: 500px;
+}
+
+.flags-table {
+    width: 500px;
+} */
+
+th,
+td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    border: none;
+    text-align: center;
+    font-family: monospace;
+}
+
+input:disabled {
+    background-color: #eee;
+}
+
+.readonly-row {
+    background-color: #e0e0e0;
+}
+
+.readonly-row input {
+    background-color: #e0e0e0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.command-complete {
+    padding: 20px;
+    background: #e0e0e0;
+    border: none;
+}
+
+.command-complete:active {
+    background-color: #9d9d9d;
+}
+
+.highlighted-command {
+  background-color: #ffeb3b !important;
+  transition: background-color 0.3s ease;
+}
+
+#executionInfo {
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+
+#executionInfo h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.withborder {
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  border-collapse: collapse;
+  width: 7em;
+  padding: 0;
+}
+
+.misc {
+  background-color: #ff99cc;
+}
+
+.bit16-load {
+  background-color: #ccffcc;
+}
+
+.bit8-load {
+  background-color: #ccccff;
+}
+
+.bit16-arith {
+  background-color: #ffcccc;
+}
+
+.bit8-arith {
+  background-color: #ffff99;
+}
+
+.inf {
+  background-color: #9f9f9f;
+  width: 0;
+}
+
+.jmp {
+  background-color: #ffcc99;
+}
+
+.tr1 {
+  font-size: 8pt; 
+}
+
+.hidden-table {
+    display: none;
+}

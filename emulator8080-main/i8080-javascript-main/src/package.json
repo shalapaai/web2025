@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "test": "mocha 'unit_tests/**/*.test.js' --timeout 180000"
+  },
+  "name": "src",
+  "version": "1.0.0",
+  "directories": {
+    "__tests__": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "devDependencies": {
+    "mocha": "^10.0.0"
+  }
+}
