@@ -26,3 +26,5 @@ if (isset($_POST['command'])) {
         // returnToMain('No such command');
     }
 }
+
+?>

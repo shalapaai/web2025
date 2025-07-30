@@ -28,7 +28,7 @@ const commands16BitTail = [];
 
         for (cmd in opcodeMap) {
             parts = cmd.split(' ');
-            if (cmd.includes('d8')) {
+            if (cmd.includes('d8') || cmd.includes('pp')) {
                 commands8BitTail.push(parts[0]);
             }
             if (cmd.includes('a16') || cmd.includes('d16')) {

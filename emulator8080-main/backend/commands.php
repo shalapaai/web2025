@@ -16,3 +16,5 @@ fclose($file);
 // foreach ($commands as $co => $cd) {
 //     echo $co . ' ' . $cd . '<br>';
 // }
+
+?>
