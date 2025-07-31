@@ -332,29 +332,18 @@ cycleComplete.addEventListener("click", () => {
     executeCycle();
 });
 
-// Модифицированная функция выполнения команды
+
 function executeCurrentCommand(isPartialExecution = false) {
     const row = executionState.currentCommandRow;
     const commandLength = executionState.commandLength;
     const commandBytes = getCommandBytes(row, commandLength);
     
-    // Сохраняем текущий PC перед выполнением
-    const oldPC = cpu.registers.PC;
-    
     // Выполняем команду
-    if (commandBytes.length > 0) {
-        cpu.executeCommand(commandBytes, isPartialExecution);
-    }
-    
-    // Обновляем UI
+    cpu.executeCommand(commandBytes, isPartialExecution);
     updateUIFromCPU();
     
-    // Для JMP используем новый PC из процессора
-    if (commandBytes[0] === 0xC3 && !isPartialExecution) {
-        executionState.nextCommandRow = cpu.registers.PC;
-    } else {
-        executionState.nextCommandRow = oldPC + commandLength;
-    }
+    // ВСЕГДА обновляем следующий адрес команды
+    executionState.nextCommandRow = cpu.registers.PC;
 }
 
 function isArgumentRow(rowIndex) {
@@ -482,25 +471,23 @@ function handleCycle4(row) {
 
 function handleCycle5(row, length) {
     if (length === 1) {
-        // Для однобайтных команд (например, ADD B) обновляем буферные регистры
         const opcode = parseInt(document.querySelector(`input[data-row="${row}"][data-col="val"]`)?.value || "00", 16);
         
-        // Определяем, нужно ли обновлять буферные регистры для этой команды
         if (shouldUpdateBuffersForOpcode(opcode)) {
-            updateBuffersForOpcode(opcode);
+            updateBuffersForImmediateOpcode(opcode);
         }
         
         executeCurrentCommand();
-        // Сбрасываем состояние выполнения
+        
+        // Всегда берем следующий адрес из регистра PC процессора
+        executionState.nextCommandRow = cpu.registers.PC;
         executionState.currentCycle = 0;
         executionState.currentCommandRow = -1;
         
-        // Важно: обновляем отображение PC
-        updateProgramCounter(cpu.registers.PC);
+        // Важно: не обновляем PC здесь, так как это делает executeCurrentCommand
     } else {
         updateProgramCounter(row + 1);
         executionState.currentCycle = 6;
-        console.log(cpu.registers.PC);
     }
 }
 
@@ -523,7 +510,9 @@ function handleCycle7(row, length) {
         }
         
         executeCurrentCommand();
+        executionState.nextCommandRow = cpu.registers.PC - 1;
         executionState.currentCycle = 0;
+        executionState.currentCommandRow = -1;
     } else if (length === 3) {
         executeCurrentCommand(true);
         executionState.currentCycle = 8;
@@ -531,25 +520,52 @@ function handleCycle7(row, length) {
 }
 
 function handleCycle8(row) {
-    updateProgramCounter(row + 2);
+    updateProgramCounter(row + 1);
     executionState.currentCycle = 9;
     console.log(cpu.registers.PC);
 }
 
 function handleCycle9(row) {
-    updateAddressBuffer(row + 2);
+    updateAddressBuffer(row + 1);
     executionState.currentCycle = 10;
 }
 
+// function handleCycle10(row, length) {
+//     const argInput = document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`);
+//     updateDataBuffer(argInput?.value || "00");
+
+//     executeCurrentCommand(false);
+//     executionState.nextCommandRow = cpu.registers.PC;
+//     executionState.currentCycle = 0;
+//     executionState.currentCommandRow = -1;
+// }
+
 function handleCycle10(row, length) {
-    const argInput = document.querySelector(`input[data-row="${row + 2}"][data-col="val"]`);
+    const argInput = document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`);
     updateDataBuffer(argInput?.value || "00");
-    
-    if (length === 3) {
-        // Для LXI - завершаем выполнение без обновления буферных регистров
-        executeCurrentCommand(false);
+
+    executeCurrentCommand(false);
+    const isJumpCommand = isJumpOpcode(cpu.readMemory(row));
+    if (isJumpCommand) {
+        executionState.nextCommandRow = cpu.registers.PC;
+    } else {
+        executionState.nextCommandRow = cpu.registers.PC + 1;
     }
+    
     executionState.currentCycle = 0;
+    executionState.currentCommandRow = -1;
+}
+
+// Функция для проверки, является ли опкод переходной командой
+function isJumpOpcode(opcode) {
+    const jumpOpcodes = [
+        0xC3, // JMP
+        0xCA, 0xC2, 0xDA, 0xD2, 0xEA, 0xFA, // Условные переходы
+        0xCD, 0xCC, 0xC4, 0xDC, 0xD4, 0xEC, 0xFC, 0xE4, 0xF4, // CALL
+        0xC9, 0xC8, 0xC0, 0xD8, 0xD0, 0xE8, 0xF8, 0xE0, 0xF0, // RET
+        0xE9 // PCHL (косвенный переход)
+    ];
+    return jumpOpcodes.includes(opcode);
 }
 
 function shouldUpdateBuffersForOpcode(opcode) {

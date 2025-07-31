@@ -1,3 +1,19 @@
+const jumpOpcodes = [
+  0xC3, // JMP
+  0xCA, // JZ
+  0xC2, // JNZ
+  0xDA, // JC
+  0xD2, // JNC
+  0xEA, // JPE
+  0xE2, // JPO 
+  0xF2, // JP 
+  0xFA, // JM
+  // CALL команды
+  0xCD, 0xCC, 0xC4, 0xDC, 0xD4, 0xEC, 0xFC, 0xE4, 0xF4,
+  // RET команды
+  0xC9, 0xC8, 0xC0, 0xD8, 0xD0, 0xE8, 0xF8, 0xE0, 0xF0
+];
+
 class CPU8080 {
   constructor() {
     this.registers = {
@@ -478,6 +494,9 @@ class CPU8080 {
     const arg1 = bytes.length > 1 ? bytes[1] : null;
     const arg2 = bytes.length > 2 ? bytes[2] : null;
 
+    // Сохраняем оригинальный PC для возможного перехода
+    const originalPC = this.registers.PC;
+
     this.currentCycle = 1;
 
     // Проверяем, является ли команда специальной
@@ -763,14 +782,217 @@ class CPU8080 {
               this.registers.Z = bytes[1]; // Младший байт
           } else {
               // Формируем адрес из старшего байта команды и регистра Z
-              const newPC = (bytes[2] << 8) | this.registers.Z;
+              const newPC = ((bytes[2] << 8) | this.registers.Z) - 1;
               this.setPC(newPC);
           }
           break;
 
+      case 0xCA: // JZ
+      case 0xC2: // JNZ
+      case 0xDA: // JC
+      case 0xD2: // JNC
+      case 0xEA: // JPE
+      case 0xFA: // JPO
+          if (isPartialExecution) {
+              // Первый такт - читаем младший байт адреса
+              this.registers.Z = bytes[1];
+          } else {
+              // Второй такт - проверяем условие и прыгаем если нужно
+              let shouldJump = false;
+              
+              switch(opcode) {
+                  case 0xCA: shouldJump = this.flags.Z; break;  // JZ
+                  case 0xC2: shouldJump = !this.flags.Z; break; // JNZ
+                  case 0xDA: shouldJump = this.flags.C; break;  // JC
+                  case 0xD2: shouldJump = !this.flags.C; break; // JNC
+                  case 0xEA: shouldJump = this.flags.P; break;  // JPE
+                  case 0xFA: shouldJump = !this.flags.P; break; // JPO
+              }
+              
+              if (shouldJump) {
+                  const newPC = ((bytes[2] << 8) | this.registers.Z) - 1;
+                  this.setPC(newPC);
+              }
+          }
+          break;
+        
+      case 0xFA: // JM (Jump Minus)
+          if (isPartialExecution) {
+              this.registers.Z = bytes[1]; // Младший байт адреса
+          } else {
+              if (this.flags.S) { // Если флаг S=1 (отрицательный результат)
+                  const newPC = ((bytes[2] << 8) | this.registers.Z) - 1;
+                  this.setPC(newPC);
+              }
+          }
+          break;
+
+      case 0xF2: // JP (Jump Plus)
+          if (isPartialExecution) {
+              this.registers.Z = bytes[1]; // Младший байт адреса
+          } else {
+              if (!this.flags.S) { // Если флаг S=0 (положительный результат)
+                  const newPC = ((bytes[2] << 8) | this.registers.Z) - 1;
+                  this.setPC(newPC);
+              }
+          }
+          break;
+
+      case 0xC7: // RST 0
+      case 0xCF: // RST 1
+      case 0xD7: // RST 2
+      case 0xDF: // RST 3
+      case 0xE7: // RST 4
+      case 0xEF: // RST 5
+      case 0xF7: // RST 6
+      case 0xFF: // RST 7
+          // Вычисляем адрес перехода: N*8 (где N = 0-7)
+          const rstAddress = (opcode & 0x38) * 8; // 0x38 = 00111000
+          
+          // Сохраняем адрес возврата (PC + 1) в стеке
+          const returnAddr = this.registers.PC + 1;
+          this.writeMemory(this.registers.SP - 1, (returnAddr >> 8) & 0xFF); // Старший байт
+          this.writeMemory(this.registers.SP - 2, returnAddr & 0xFF);       // Младший байт
+          this.registers.SP -= 2;
+          
+          // Переход по вычисленному адресу
+          this.setPC(rstAddress - 1); // -1 для компенсации инкремента PC
+          break;
+
+      case 0xCD: // CALL (безусловный)
+          if (isPartialExecution) {
+              this.registers.Z = bytes[1]; // Младший байт адреса
+          } else {
+              // Сохраняем адрес возврата (PC + 3) в стеке
+              const returnAddr = this.registers.PC + 3;
+              this.writeMemory(this.registers.SP - 1, (returnAddr >> 8) & 0xFF); // Старший байт
+              this.writeMemory(this.registers.SP - 2, returnAddr & 0xFF);      // Младший байт
+              this.registers.SP -= 2;
+              
+              // Переход по адресу
+              const newPC = ((bytes[2] << 8) | this.registers.Z) - 1;
+              this.setPC(newPC);
+          }
+          break;
+
+      // Условные варианты CALL (используют те же коды, что и условные JMP)
+      case 0xCC: // CZ (Call if Zero)
+      case 0xC4: // CNZ (Call if Not Zero)
+      case 0xDC: // CC (Call if Carry)
+      case 0xD4: // CNC (Call if No Carry)
+      case 0xEC: // CPE (Call if Parity Even)
+      case 0xFC: // CM (Call if Minus)
+      case 0xE4: // CPO (Call if Parity Odd)
+      case 0xF4: // CP (Call if Plus)
+          if (isPartialExecution) {
+              this.registers.Z = bytes[1]; // Младший байт адреса
+          } else {
+              let shouldCall = false;
+              switch(opcode) {
+                  case 0xCC: shouldCall = this.flags.Z; break;  // CZ
+                  case 0xC4: shouldCall = !this.flags.Z; break; // CNZ
+                  case 0xDC: shouldCall = this.flags.C; break;  // CC
+                  case 0xD4: shouldCall = !this.flags.C; break; // CNC
+                  case 0xEC: shouldCall = this.flags.P; break;  // CPE
+                  case 0xFC: shouldCall = this.flags.S; break;  // CM
+                  case 0xE4: shouldCall = !this.flags.P; break; // CPO
+                  case 0xF4: shouldCall = !this.flags.S; break; // CP
+              }
+              
+              if (shouldCall) {
+                  // Сохраняем адрес возврата (PC + 3) в стеке
+                  const returnAddr = this.registers.PC + 3;
+                  this.writeMemory(this.registers.SP - 1, (returnAddr >> 8) & 0xFF);
+                  this.writeMemory(this.registers.SP - 2, returnAddr & 0xFF);
+                  this.registers.SP -= 2;
+                  
+                  // Переход по адресу
+                  const newPC = ((bytes[2] << 8) | this.registers.Z) - 1;
+                  this.setPC(newPC);
+              }
+          }
+          break;
+
+      case 0xC9: // RET (безусловный возврат)
+          // Чтение адреса возврата из стека
+          const lowByte = this.readMemory(this.registers.SP);
+          const highByte = this.readMemory(this.registers.SP + 1);
+          const returnAddrRet = (highByte << 8) | lowByte;
+          
+          this.registers.SP += 2; // Восстанавливаем указатель стека
+          this.setPC(returnAddrRet - 1); // -1 для компенсации инкремента PC
+          
+          // Такты: 10 (3 на чтение младшего, 3 на старший, 1 на сложение, 3 на восстановление PC)
+          this.cycles += 10;
+          break;
+
+      case 0xC0: // RNZ (Return if Not Zero)
+      case 0xC8: // RZ (Return if Zero)
+      case 0xD0: // RNC (Return if No Carry)
+      case 0xD8: // RC (Return if Carry)
+      case 0xE0: // RPO (Return if Parity Odd)
+      case 0xE8: // RPE (Return if Parity Even)
+      case 0xF0: // RP (Return if Plus)
+      case 0xF8: // RM (Return if Minus)
+          // Проверка условия
+          let conditionMet = false;
+          switch(opcode) {
+              case 0xC0: conditionMet = !this.flags.Z; break;  // RNZ
+              case 0xC8: conditionMet = this.flags.Z; break;   // RZ
+              case 0xD0: conditionMet = !this.flags.C; break;  // RNC
+              case 0xD8: conditionMet = this.flags.C; break;   // RC
+              case 0xE0: conditionMet = !this.flags.P; break;  // RPO
+              case 0xE8: conditionMet = this.flags.P; break;   // RPE
+              case 0xF0: conditionMet = !this.flags.S; break;  // RP
+              case 0xF8: conditionMet = this.flags.S; break;   // RM
+          }
+
+          if (conditionMet) {
+              // Полноценный RET
+              const lowByte = this.readMemory(this.registers.SP);
+              const highByte = this.readMemory(this.registers.SP + 1);
+              const returnAddr = (highByte << 8) | lowByte;
+              
+              this.registers.SP += 2;
+              this.setPC(returnAddr - 1);
+              
+              // Такты: 11 (1 на проверку условия + 10 как у обычного RET)
+              this.cycles += 11;
+          } else {
+              // Только проверка условия (возврат не выполняется)
+              // Такты: 5 (1 на проверку условия + 4 на чтение команды)
+              this.cycles += 5;
+          }
+          break;
+
+    case 0xE9: // PCHL
+        // Загружаем PC из пары регистров H:L
+        const newPC = (this.registers.H << 8) | this.registers.L;
+        this.setPC(newPC - 1); // -1 для компенсации последующего инкремента PC
+        
+        // Такты: 5 (1 на чтение опкода + 4 на выполнение)
+        this.cycles += 5;
+        break;
+
       default:
-        console.warn(`Unknown opcode: 0x${opcode.toString(16).padStart(2, '0')}`);
+        // Автоматическое увеличение PC только если команда не меняет его
+        if (!this.isHalted && !isPartialExecution && 
+            !jumpOpcodes.includes(opcode) && 
+            !isSpecialCommand(opcode)) {
+            this.registers.PC += bytes.length;
+        }
+        break;
     }
+       // Автоматическое увеличение PC после выполнения команды
+    if (!this.isHalted && !isPartialExecution && 
+        !jumpOpcodes.includes(opcode) && 
+        !isSpecialCommand(opcode)) {
+        // Увеличиваем PC на длину команды
+        this.registers.PC += bytes.length;
+    }
+
+    return true;
+    
   }
   
   updateFlags(result, options = {}) {
