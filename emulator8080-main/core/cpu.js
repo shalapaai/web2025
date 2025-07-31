@@ -778,13 +778,12 @@ class CPU8080 {
         this.registers.SP = ((this.registers.H << 8) | this.registers.L) & 0xFFFF;
         break;
 
-      // В классе CPU8080 для команды JMP:
       case 0xC3: // JMP
           if (isPartialExecution) {
               this.registers.Z = bytes[1]; // Младший байт
           } else {
-              // Формируем адрес из старшего байта команды и регистра Z
-              const newPC = ((bytes[2] << 8) | this.registers.Z) - 1;
+              this.registers.W = bytes[2];
+              const newPC = ((this.registers.W << 8) | this.registers.Z) - 1;
               this.setPC(newPC);
           }
           break;

@@ -109,11 +109,11 @@ function updateProgramCounter(row) {
   cpu.setPC(row);
   programCounter.textContent = toHex(row, 4);
   
-//   // Прокручиваем к текущей команде
-//   const rowElement = tableBody.querySelector(`tr[data-row="${row}"]`);
-//   if (rowElement) {
-//     rowElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-//   }
+  // Прокручиваем к текущей команде
+  const rowElement = tableBody.querySelector(`tr[data-row="${row}"]`);
+  if (rowElement) {
+    rowElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 // Функция для обновления буфера адреса
@@ -281,6 +281,7 @@ function executeCurrentCommand(isPartialExecution = false) {
     
     // ВСЕГДА обновляем следующий адрес команды
     executionState.nextCommandRow = cpu.registers.PC;
+    // executionState.currentCommandRow = -1;
 }
 
 function isArgumentRow(rowIndex) {
@@ -318,7 +319,6 @@ function executeCycle() {
     }
 
     const { currentCycle, currentCommandRow, commandLength } = executionState;
-    
 
     
     // 1. Обработка подсветки

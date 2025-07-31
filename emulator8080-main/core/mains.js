@@ -26,7 +26,7 @@ cpu.onMemoryWrite = (address) => {
 };
 
 const tableBody = document.querySelector("#memoryTable tbody");
-const numRows = 0xFF + 1;
+const numRows = 0xFFFF + 1;
 
 function toHex(value, length = 4) {
   return value.toString(16).toUpperCase().padStart(length, "0");
@@ -54,6 +54,7 @@ function setCellValue(row, col, text) {
       const bytes = text.split(/\s+/);
       bytes.forEach((byte, i) => {
         if (byte.length === 2) {
+          console.log(text);
           const value = parseInt(byte, 16);
           cpu.writeMemory(row + i, value);
         }
@@ -121,20 +122,51 @@ function unclaimIfOccupied(row, maxOffset = 2) {
   }
 }
 
-// Снимает пометку read-only
+// // Снимает пометку read-only
+// function unmarkOwnedRows(ownerIndex) {
+//   tableBody.querySelectorAll(`tr[data-owner="${ownerIndex}"]`).forEach(row => {
+//     const idx = parseInt(row.dataset.row, 10);
+//     row.classList.remove("readonly-row");
+//     delete row.dataset.owner;
+//     row.querySelectorAll("input").forEach(input => {
+//       input.readOnly = false;
+//       input.tabIndex = 0;
+//       input.value = "00";
+//     });
+//     if (cpu.rowStates[idx]) {
+//       cpu.rowStates[idx].readonly = false;
+//       cpu.rowStates[idx].owner = null;
+//     }
+//   });
+// }
+
 function unmarkOwnedRows(ownerIndex) {
   tableBody.querySelectorAll(`tr[data-owner="${ownerIndex}"]`).forEach(row => {
+    
     const idx = parseInt(row.dataset.row, 10);
     row.classList.remove("readonly-row");
     delete row.dataset.owner;
-    row.querySelectorAll("input").forEach(input => {
-      input.readOnly = false;
-      input.tabIndex = 0;
-      input.value = "";
-    });
+
+    // сброс значений на 00/NOP
+    const valInput = row.querySelector('input[data-col="val"]');
+    const cmdInput = row.querySelector('input[data-col="cmd"]');
+    if (valInput) {
+      valInput.value = "00";
+      valInput.readOnly = false;
+      valInput.tabIndex = 0;
+      cpu.writeMemory(idx, 0x00);   // сброс памяти
+    }
+    if (cmdInput) {
+      cmdInput.value = "NOP";
+      cmdInput.readOnly = false;
+      cmdInput.tabIndex = 0;
+    }
+
     if (cpu.rowStates[idx]) {
       cpu.rowStates[idx].readonly = false;
       cpu.rowStates[idx].owner = null;
+      cpu.rowStates[idx].valInputValue = "00";
+      cpu.rowStates[idx].cmdInputValue = "NOP";
     }
   });
 }
@@ -308,154 +340,174 @@ function createTableRow(rowIndex) {
     });
 
     // Обработчик ввода для поля значения
-    valInput.addEventListener("input", () => {
-        const row = parseInt(valInput.dataset.row, 10);
+    // Обработчик ввода для поля значения
+valInput.addEventListener("input", () => {
+    const row = parseInt(valInput.dataset.row, 10);
+    
+    // Проверяем, не является ли текущая строка readonly
+    if (cpu.rowStates[row]?.readonly) {
+        return; // Не обрабатываем ввод для readonly строк
+    }
 
-        // Обновляем память CPU
-        const bytes = valInput.value.toUpperCase().split(/\s+/);
-        bytes.forEach((byte, i) => {
-            if (byte.length === 2) {
-                const value = parseInt(byte, 16);
-                if (!isNaN(value)) {
-                    cpu.writeMemory(row + i, value);
-                }
+    // Обновляем память CPU
+    const bytes = valInput.value.toUpperCase().split(/\s+/);
+    bytes.forEach((byte, i) => {
+        if (byte.length === 2) {
+            const value = parseInt(byte, 16);
+            if (!isNaN(value)) {
+                cpu.writeMemory(row + i, value);
             }
-        });
+        }
+    });
 
-        cmdInput.value = "";
-        unclaimIfOccupied(row);
-        unmarkOwnedRows(row);
+    cmdInput.value = "";
+    unclaimIfOccupied(row);
+    unmarkOwnedRows(row);
 
-        const [code, arg0, arg1] = valInput.value.toUpperCase().split(" ");
-        
-        if (code.length !== 2) return;
+    const [code, arg0, arg1] = valInput.value.toUpperCase().split(" ");
+    
+    if (code.length !== 2) return;
 
-        const mnemonic = reverseOpcodeMap[code];
-        if (!mnemonic) return;
+    const mnemonic = reverseOpcodeMap[code];
+    if (!mnemonic) return;
 
-        const [command, args] = mnemonic.split(" ");
-        
-        valInput.value = valInput.value.toUpperCase();
-        cmdInput.value = mnemonic;
+    const [command, args] = mnemonic.split(" ");
+    
+    valInput.value = valInput.value.toUpperCase();
+    cmdInput.value = mnemonic;
 
-        if (commands8BitTail.includes(command)) {
-            const data = validateArg(arg0)
-                ? arg0
-                : document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`)?.value.toUpperCase();
-
-            if (validateArg(data)) {
-                const formattedCmd = mnemonic.replace("d8", data);
-                cmdInput.value = formattedCmd;
-
-                valInput.value = code;
-                setCellValue(row + 1, "val", data);
-
-                markRowReadonly(row + 1, row);
-            }
-        } else if (commands16BitTail.includes(command)) {
-            const lo = validateArg(arg0)
+    if (commands8BitTail.includes(command)) {
+        const data = validateArg(arg0)
             ? arg0
             : document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`)?.value.toUpperCase();
-            const hi = validateArg(arg1)
-            ? arg1
-            : document.querySelector(`input[data-row="${row + 2}"][data-col="val"]`)?.value.toUpperCase();
 
-            if (validateArg(lo) && validateArg(hi)) {
-                const formattedCmd = `${command} ${args.replace(/d16|a16/, hi + lo)}`;
-                cmdInput.value = formattedCmd;
+        if (validateArg(data)) {
+            const formattedCmd = mnemonic.replace("d8", data);
+            cmdInput.value = formattedCmd;
 
+            if (valInput.value.length >= 5 && !valInput.value.endsWith(' ')) {
                 valInput.value = code;
-                setCellValue(row + 1, "val", lo);
+            }
+            
+            setCellValue(row + 1, "val", data);
+
+            markRowReadonly(row + 1, row);
+        }
+    } else if (commands16BitTail.includes(command)) {
+        const lo = validateArg(arg0)
+        ? arg0
+        : document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`)?.value.toUpperCase();
+        const hi = validateArg(arg1)
+        ? arg1
+        : document.querySelector(`input[data-row="${row + 2}"][data-col="val"]`)?.value.toUpperCase();
+
+        if (validateArg(lo) && validateArg(hi)) {
+            const formattedCmd = `${command} ${args.replace(/d16|a16/, hi + lo)}`;
+            cmdInput.value = formattedCmd;
+
+            
+            setCellValue(row + 1, "val", lo);        
+            
+            markRowReadonly(row + 1, row);
+            markRowReadonly(row + 2, row);
+            
+            if (valInput.value.length >= 8 && !valInput.value.endsWith(' ')) {
+                valInput.value = code;
                 setCellValue(row + 2, "val", hi);
-                
-                markRowReadonly(row + 1, row);
-                markRowReadonly(row + 2, row);
             }
         }
-        saveRowState(row, valInput.value, cmdInput.value, { readonly: valInput.readOnly, owner: cpu.rowStates[row]?.owner });
-    });
+    }
+    
+    saveRowState(row, valInput.value, cmdInput.value, { readonly: valInput.readOnly, owner: cpu.rowStates[row]?.owner });
+});
 
-    // Обработчик ввода для поля команды
-    cmdInput.addEventListener("input", (e) => {
-        const row = parseInt(e.target.dataset.row, 10);
-        const inputText = cmdInput.value.replace(/,\s+/g, ",").trim();
+// Обработчик ввода для поля команды
+cmdInput.addEventListener("input", (e) => {
+    const row = parseInt(e.target.dataset.row, 10);
+    
+    // Проверяем, не является ли текущая строка readonly
+    if (cpu.rowStates[row]?.readonly) {
+        return; // Не обрабатываем ввод для readonly строк
+    }
 
-        unclaimIfOccupied(row);
-        unmarkOwnedRows(row);
+    const inputText = cmdInput.value.replace(/,\s+/g, ",").trim();
 
-        const opcode = opcodeMap[inputText];
-        if (opcode) return setCellValue(row, "val", opcode);
+    unclaimIfOccupied(row);
+    unmarkOwnedRows(row);
 
-        const parts = inputText.split(" ");
-        const command = parts[0]?.toUpperCase();
-        const data = parts[1]?.toUpperCase();
+    const opcode = opcodeMap[inputText];
+    if (opcode) return setCellValue(row, "val", opcode);
 
-        const mviMatch = inputText.match(/^MVI\s+([A-Z]),([0-9A-F]{2})$/i);
-        if (mviMatch) {
-            const fullMnemonic = `MVI ${mviMatch[1].toUpperCase()},d8`;
-            const code = opcodeMap[fullMnemonic];
-            if (code) {
-                setCellValue(row, "val", code);
-                setCellValue(row + 1, "val", mviMatch[2]);
+    const parts = inputText.split(" ");
+    const command = parts[0]?.toUpperCase();
+    const data = parts[1]?.toUpperCase();
 
-                markRowReadonly(row + 1, row);
+    const mviMatch = inputText.match(/^MVI\s+([A-Z]),([0-9A-F]{2})$/i);
+    if (mviMatch) {
+        const fullMnemonic = `MVI ${mviMatch[1].toUpperCase()},d8`;
+        const code = opcodeMap[fullMnemonic];
+        if (code) {
+            setCellValue(row, "val", code);
+            setCellValue(row + 1, "val", mviMatch[2]);
 
-                cmdInput.value = `MVI ${mviMatch[1].toUpperCase()},${mviMatch[2]}`;
+            markRowReadonly(row + 1, row);
 
-                return;
-            }
+            cmdInput.value = `MVI ${mviMatch[1].toUpperCase()},${mviMatch[2]}`;
+
+            return;
         }
+    }
 
-        if (commands8BitTail.includes(command) && data?.length === 2) {
-            const code = opcodeMap[`${command} d8`];
-            if (code) {
-                setCellValue(row, "val", code);
-                setCellValue(row + 1, "val", data);
+    if (commands8BitTail.includes(command) && data?.length === 2) {
+        const code = opcodeMap[`${command} d8`];
+        if (code) {
+            setCellValue(row, "val", code);
+            setCellValue(row + 1, "val", data);
 
-                markRowReadonly(row + 1, row);
+            markRowReadonly(row + 1, row);
 
-                cmdInput.value = `${command} ${data}`;
+            cmdInput.value = `${command} ${data}`;
 
-                return;
-            }
+            return;
         }
+    }
 
-        const lxiMatch = inputText.match(/^(\w+)\s+([A-Z]{1,2}),(\w{4})$/i);
-        if (lxiMatch) {
-            const fullMnemonic = `${lxiMatch[1].toUpperCase()} ${lxiMatch[2].toUpperCase()},d16`;
-            const code = opcodeMap[fullMnemonic];
-            const data = lxiMatch[3].toUpperCase();
-            if (code && data.length === 4) {
-                setCellValue(row, "val", code);
-                setCellValue(row + 1, "val", data.slice(2, 4));
-                setCellValue(row + 2, "val", data.slice(0, 2));
+    const lxiMatch = inputText.match(/^(\w+)\s+([A-Z]{1,2}),(\w{4})$/i);
+    if (lxiMatch) {
+        const fullMnemonic = `${lxiMatch[1].toUpperCase()} ${lxiMatch[2].toUpperCase()},d16`;
+        const code = opcodeMap[fullMnemonic];
+        const data = lxiMatch[3].toUpperCase();
+        if (code && data.length === 4) {
+            setCellValue(row, "val", code);
+            setCellValue(row + 1, "val", data.slice(2, 4));
+            setCellValue(row + 2, "val", data.slice(0, 2));
 
-                markRowReadonly(row + 1, row);
-                markRowReadonly(row + 2, row);
+            markRowReadonly(row + 1, row);
+            markRowReadonly(row + 2, row);
 
-                cmdInput.value = `${lxiMatch[1]} ${lxiMatch[2]},${data}`;
+            cmdInput.value = `${lxiMatch[1]} ${lxiMatch[2]},${data}`;
 
-                return;
-            }
+            return;
         }
+    }
 
-        if (commands16BitTail.includes(command) && data?.length === 4) {
-            const code = opcodeMap[`${command} a16`];
-            if (code) {
-                setCellValue(row, "val", code);
-                setCellValue(row + 1, "val", data.slice(2, 4));
-                setCellValue(row + 2, "val", data.slice(0, 2));
+    if (commands16BitTail.includes(command) && data?.length === 4) {
+        const code = opcodeMap[`${command} a16`];
+        if (code) {
+            setCellValue(row, "val", code);
+            setCellValue(row + 1, "val", data.slice(2, 4));
+            setCellValue(row + 2, "val", data.slice(0, 2));
 
-                markRowReadonly(row + 1, row);
-                markRowReadonly(row + 2, row);
+            markRowReadonly(row + 1, row);
+            markRowReadonly(row + 2, row);
 
-                cmdInput.value = `${command} ${data}`;
-            }
+            cmdInput.value = `${command} ${data}`;
         }
+    }
 
-        saveRowState(row, valInput.value, cmdInput.value, { readonly: valInput.readOnly, owner: cpu.rowStates[row]?.owner });
-        valInput.value = "";
-    });
+    saveRowState(row, valInput.value, cmdInput.value, { readonly: valInput.readOnly, owner: cpu.rowStates[row]?.owner });
+    valInput.value = "";
+});
 
     // Обработчики навигации по таблице
     [valInput, cmdInput].forEach(input => {
