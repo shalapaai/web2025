@@ -31,17 +31,13 @@ resetCompliting.addEventListener("click", () => {
 });
 
 function getCommandLengthForAddress(address) {
-  const opcode = cpu.readMemory(address);
-  const mnemonic = reverseOpcodeMap[toHex(opcode, 2)];
-  
-  if (!mnemonic) return 1;
-  
-  const [command] = mnemonic.split(" ");
-  
-  if (commands8BitTail.includes(command)) return 2;
-  if (commands16BitTail.includes(command)) return 3;
-  
-  return 1;
+    const opcode = cpu.readMemory(address);
+    const mnemonic = reverseOpcodeMap[toHex(opcode, 2)] || "";
+    const command = mnemonic.split(" ")[0];
+    
+    if (commands8BitTail.includes(command)) return 2;
+    if (commands16BitTail.includes(command)) return 3;
+    return 1;
 }
 
 function getFullCommandHex(address) {
@@ -101,11 +97,11 @@ function resetExecutionState() {
 // }
 
 function getCommandBytes(row, length) {
-  const bytes = [];
-  for (let i = 0; i < length; i++) {
-    bytes.push(cpu.memory[row + i]); // Читаем из памяти CPU
-  }
-  return bytes;
+    const bytes = [];
+    for (let i = 0; i < length; i++) {
+        bytes.push(cpu.readMemory(row + i));
+    }
+    return bytes;
 }
 
 // При изменении счетчика команд в таблице обновляем PC процессора
@@ -148,75 +144,12 @@ function getCommandLength(commandText) {
 
 function findNextCommand(startFrom) {
     for (let i = startFrom; i < numRows; i++) {
-        const row = tableBody.querySelector(`tr[data-row="${i}"]`);
-        if (!row || row.classList.contains("readonly-row")) continue;
-        
-        const hasCommand = row.querySelector('input[data-col="cmd"]')?.value.trim();
-        const hasValue = row.querySelector('input[data-col="val"]')?.value.trim();
-        
-        if ((hasCommand || hasValue) && !isArgumentRow(i)) {
+        if (!isArgumentRow(i)) {
             return i;
         }
     }
     return -1;
 }
-
-// Функция для выполнения команды до завершения всех тактов
-// function executeCommandToCompletion() {
-//     if (executionState.isExecuting) return;
-//     executionState.isExecuting = true;
-
-//     // Проверка на HALT перед началом выполнения
-//     if (cpu.isHalted) {
-//         const shouldResume = confirm("Процессор остановлен командой HLT.\nПродолжить выполнение?");
-//         if (shouldResume) {
-//             cpu.resumeFromHalt();
-//         } else {
-//             executionState.isExecuting = false;
-//             return;
-//         }
-//     }
-    
-//     // Если мы еще не начали выполнять команду (currentCycle === 0)
-//     if (executionState.currentCycle === 0) {
-//         // Находим следующую команду
-//         const foundRow = findNextCommand(executionState.nextCommandRow);
-//         executionState.currentCommandRow = foundRow;
-//         // Получаем информацию о команде
-//         const rowElement = tableBody.querySelector(`tr[data-row="${foundRow}"]`);
-//         if (rowElement) {
-//             const valInput = rowElement.querySelector('input[data-col="val"]');
-//             const cmdInput = rowElement.querySelector('input[data-col="cmd"]');
-//             executionState.commandHex = valInput?.value || "";
-//             executionState.commandText = cmdInput?.value || "";
-//             executionState.commandLength = getCommandLength(executionState.commandText);
-//         }
-        
-//         // Начинаем с такта 1
-//         executionState.currentCycle = 1;
-//     }
-    
-//     // Вычисляем сколько тактов нужно выполнить для текущей команды
-//     const totalCycles = getTotalCyclesForCommand(executionState.commandLength);
-    
-//     // Выполняем все такты до завершения команды
-//     const executeNextCycle = () => {
-//         if (executionState.currentCycle > 0 && executionState.currentCycle <= totalCycles) {
-//             executeCycle();
-            
-//             // Если команда еще не завершена, продолжаем
-//             if (executionState.currentCycle > 0 && executionState.currentCycle <= totalCycles) {
-//                 setTimeout(executeNextCycle, 10);
-//             } else {
-//                 executionState.isExecuting = false;
-//             }
-//         } else {
-//             executionState.isExecuting = false;
-//         }
-//     };
-    
-//     executeNextCycle();
-// }
 
 function executeCommandToCompletion() {
     if (executionState.isExecuting) return;
@@ -233,23 +166,27 @@ function executeCommandToCompletion() {
         }
     }
     
-    // Если мы еще не начали выполнять команду (currentCycle === 0)
     if (executionState.currentCycle === 0) {
-        // Находим следующую команду
-        const foundRow = findNextCommand(executionState.nextCommandRow);
-        
-        executionState.currentCommandRow = foundRow;
-        // Получаем информацию о команде
-        const rowElement = tableBody.querySelector(`tr[data-row="${foundRow}"]`);
-        if (rowElement) {
-            const valInput = rowElement.querySelector('input[data-col="val"]');
-            const cmdInput = rowElement.querySelector('input[data-col="cmd"]');
-            executionState.commandHex = valInput?.value || "";
-            executionState.commandText = cmdInput?.value || "";
-            executionState.commandLength = getCommandLength(executionState.commandText);
+        // Находим следующую команду, читая прямо из памяти CPU
+        let foundRow = -1;
+        for (let i = executionState.nextCommandRow; i < numRows; i++) {
+            // Проверяем, что это не аргумент предыдущей команды
+            if (!isArgumentRow(i)) {
+                foundRow = i;
+                break;
+            }
         }
         
-        // Начинаем с такта 1
+        executionState.currentCommandRow = foundRow;
+        
+        // Получаем информацию о команде из памяти CPU
+        if (foundRow !== -1) {
+            const opcode = cpu.readMemory(foundRow);
+            executionState.commandHex = toHex(opcode, 2);
+            executionState.commandText = reverseOpcodeMap[executionState.commandHex] || "NOP";
+            executionState.commandLength = getCommandLengthForAddress(foundRow);
+        }
+        
         executionState.currentCycle = 1;
     }
     
@@ -347,35 +284,21 @@ function executeCurrentCommand(isPartialExecution = false) {
 }
 
 function isArgumentRow(rowIndex) {
-    // Проверяем текущую строку и две предыдущие (максимальный охват для 3-байтовых команд)
-    const previousRowsToCheck = [rowIndex - 1, rowIndex - 2]; 
-
-    // Проверяем каждую из предыдущих строк
-    return previousRowsToCheck.some(prevRowIndex => {
-        // Находим строку таблицы
-        const prevRow = tableBody.querySelector(`tr[data-row="${prevRowIndex}"]`);
+    // Проверяем предыдущие 2 строки (максимальная длина команды с аргументами)
+    for (let i = Math.max(0, rowIndex - 2); i < rowIndex; i++) {
+        const opcode = cpu.readMemory(i);
+        const mnemonic = reverseOpcodeMap[toHex(opcode, 2)];
+        if (!mnemonic) continue;
         
-        // Пропускаем если строка не существует или только для чтения
-        if (!prevRow || prevRow.classList.contains("readonly-row")) return false;
-        const prevCommandText = prevRow.querySelector('input[data-col="cmd"]')?.value.trim();
-        if (!prevCommandText) return false;
+        const command = mnemonic.split(" ")[0];
+        const commandLength = getCommandLengthForAddress(i);
         
-        // Извлекаем имя команды (первое слово)
-        const commandName = prevCommandText.split(" ")[0];
-        
-        // Проверяем, является ли это командой с аргументами
-        const isCommandWithArgs = commands16BitTail.concat(commands8BitTail).includes(commandName);
-        
-        // Если это не команда с аргументами - пропускаем
-        if (!isCommandWithArgs) return false;
-        
-        // Вычисляем длину команды (1-3 байта)
-        const commandLength = getCommandLength(prevCommandText);
-        
-        // Проверяем, попадает ли текущая строка в диапазон аргументов команды
-        const isCurrentRowArgument = (prevRowIndex + commandLength) > rowIndex;
-        return isCurrentRowArgument;
-    });
+        if ((commands8BitTail.includes(command) && commandLength === 2 && i + 1 === rowIndex) ||
+            (commands16BitTail.includes(command) && commandLength === 3 && (i + 1 === rowIndex || i + 2 === rowIndex))) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function executeCycle() {
@@ -396,11 +319,21 @@ function executeCycle() {
 
     const { currentCycle, currentCommandRow, commandLength } = executionState;
     
+
+    
     // 1. Обработка подсветки
     handleHighlighting(currentCycle, currentCommandRow, commandLength);
 
     // 2. Получаем байты команды
+        // Получаем байты команды из памяти CPU
     const commandBytes = getCommandBytes(currentCommandRow, commandLength);
+    
+    // Обновляем UI на основе данных из памяти
+    if (currentCycle === 4) {
+        const fullHex = commandBytes.map(b => toHex(b, 2)).join(' ');
+        currentCommandHex.textContent = `Рег. команд: ${fullHex} (по адресу ${toHex(currentCommandRow, 4)})`;
+        currentCommandText.textContent = `Д/Ш команд: ${executionState.commandText}`;
+    }
     
     // 3. Проверяем, является ли команда специальной
     if (isSpecialCommand(commandBytes[0])) {
@@ -630,30 +563,33 @@ function shouldUpdateBuffersForImmediateOpcode(opcode) {
     return immediateOpcodes.includes(opcode);
 }
 
-function updateBuffersForImmediateOpcode(opcode, value) {
-    // Для команд с непосредственным операндом:
-    // bufReg1 = значение регистра A
-    // bufReg2 = непосредственное значение из команды
-    cpu.setBufReg1(cpu.registers.A);
-    cpu.setBufReg2(value);
-}
-
-// Функция обработки подсветки
 function handleHighlighting(currentCycle, currentCommandRow, commandLength) {
-    // Удаляем подсветку только при начале новой команды
+    // Удаляем старую подсветку
     if (currentCycle === 1) {
-        tableBody.querySelectorAll(".highlighted-command, .highlighted-argument")
-            .forEach(row => row.classList.remove("highlighted-command", "highlighted-argument"));
+        tableBody.querySelectorAll(".highlighted-command, .highlighted-argument").forEach(row => {
+            const rowIndex = parseInt(row.dataset.row, 10);
+            row.classList.remove("highlighted-command", "highlighted-argument");
+
+            // Удаляем флаг подсветки из rowStates
+            if (cpu.rowStates[rowIndex]) {
+                cpu.rowStates[rowIndex].highlighted = false;
+            }
+        });
     }
 
-    // Определяем текущую строку для подсветки
+    // Определяем строку для подсветки
     const { row, isArgument } = getHighlightTarget(currentCycle, currentCommandRow, commandLength);
-    
-    // Применяем подсветку
+
     if (row >= 0) {
         const rowElement = tableBody.querySelector(`tr[data-row="${row}"]`);
         if (rowElement) {
-            rowElement.classList.add(isArgument ? "highlighted-argument" : "highlighted-command");
+            const className = isArgument ? "highlighted-argument" : "highlighted-command";
+            rowElement.classList.add(className);
+
+            // Сохраняем флаг подсветки в rowStates
+            cpu.rowStates[row] = cpu.rowStates[row] || {};
+            cpu.rowStates[row].highlighted = true;
+            cpu.rowStates[row].highlightType = isArgument ? "argument" : "command";
         }
     }
 }

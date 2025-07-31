@@ -68,6 +68,22 @@ function validateArg(arg) {
   return arg && arg.length === 2;
 }
 
+function saveRowState(rowIndex, valValue, cmdValue, options = {}) {
+  cpu.rowStates[rowIndex] = cpu.rowStates[rowIndex] || {};
+  cpu.rowStates[rowIndex].valInputValue = valValue;
+  cpu.rowStates[rowIndex].cmdInputValue = cmdValue;
+
+  if (options.readonly !== undefined) {
+    cpu.rowStates[rowIndex].readonly = options.readonly;
+  }
+  if (options.owner !== undefined) {
+    cpu.rowStates[rowIndex].owner = options.owner;
+  }
+  if (options.highlighted !== undefined) {
+    cpu.rowStates[rowIndex].highlighted = options.highlighted;
+  }
+}
+
 // Помечает строку как read-only
 function markRowReadonly(rowIndex, ownerIndex) {
   const row = tableBody.querySelector(`tr[data-row="${rowIndex}"]`);
@@ -85,6 +101,11 @@ function markRowReadonly(rowIndex, ownerIndex) {
     input.readOnly = true;
     input.tabIndex = -1;
   });
+
+  // Обновляем состояние в rowStates
+  cpu.rowStates[rowIndex] = cpu.rowStates[rowIndex] || {};
+  cpu.rowStates[rowIndex].readonly = true;
+  cpu.rowStates[rowIndex].owner = ownerIndex;
 }
 
 // Освобождает занятые строки
@@ -103,6 +124,7 @@ function unclaimIfOccupied(row, maxOffset = 2) {
 // Снимает пометку read-only
 function unmarkOwnedRows(ownerIndex) {
   tableBody.querySelectorAll(`tr[data-owner="${ownerIndex}"]`).forEach(row => {
+    const idx = parseInt(row.dataset.row, 10);
     row.classList.remove("readonly-row");
     delete row.dataset.owner;
     row.querySelectorAll("input").forEach(input => {
@@ -110,6 +132,10 @@ function unmarkOwnedRows(ownerIndex) {
       input.tabIndex = 0;
       input.value = "";
     });
+    if (cpu.rowStates[idx]) {
+      cpu.rowStates[idx].readonly = false;
+      cpu.rowStates[idx].owner = null;
+    }
   });
 }
 
@@ -235,14 +261,19 @@ function createTableRow(rowIndex) {
     // Создаем поле ввода для команды
     const cmdInput = createInput(rowIndex, "cmd");
 
-    // Заполняем значения из памяти CPU
-    const memoryValue = cpu.readMemory(rowIndex);
-    valInput.value = toHex(memoryValue, 2);
-    
-    // Определяем команду по опкоду
-    const opcode = memoryValue;
-    const mnemonic = reverseOpcodeMap[toHex(opcode, 2)] || "NOP";
-    cmdInput.value = mnemonic;
+    // Если есть сохраненное состояние — восстанавливаем его
+    const state = cpu.rowStates[rowIndex];
+    if (state) {
+      valInput.value = state.valInputValue ?? toHex(cpu.readMemory(rowIndex), 2);
+      cmdInput.value = state.cmdInputValue ?? (reverseOpcodeMap[toHex(cpu.readMemory(rowIndex), 2)] || "NOP");
+    } else {
+      // Иначе — заполняем из памяти
+      const memoryValue = cpu.readMemory(rowIndex);
+      valInput.value = toHex(memoryValue, 2);
+      const opcode = memoryValue;
+      const mnemonic = reverseOpcodeMap[toHex(opcode, 2)] || "NOP";
+      cmdInput.value = mnemonic;
+    }
 
     // Обработчик фокуса для поля значения
     valInput.addEventListener("focus", () => {
@@ -341,6 +372,7 @@ function createTableRow(rowIndex) {
                 markRowReadonly(row + 2, row);
             }
         }
+        saveRowState(row, valInput.value, cmdInput.value, { readonly: valInput.readOnly, owner: cpu.rowStates[row]?.owner });
     });
 
     // Обработчик ввода для поля команды
@@ -421,6 +453,7 @@ function createTableRow(rowIndex) {
             }
         }
 
+        saveRowState(row, valInput.value, cmdInput.value, { readonly: valInput.readOnly, owner: cpu.rowStates[row]?.owner });
         valInput.value = "";
     });
 
@@ -468,6 +501,27 @@ function createTableRow(rowIndex) {
     row.appendChild(addrCell);
     row.appendChild(valCell);
     row.appendChild(cmdCell);
+
+    // Применяем сохраненное состояние, если есть
+  const state1 = cpu.rowStates[rowIndex];
+  if (state1) {
+    if (state1.highlighted) {
+      if (state1.highlightType === "argument") {
+        row.classList.add("highlighted-argument");
+      } else {
+        row.classList.add("highlighted-command");
+      }
+    }
+
+    if (state1.readonly) {
+      row.classList.add("readonly-row");
+      row.dataset.owner = state1.owner || "";
+      valInput.readOnly = true;
+      valInput.tabIndex = -1;
+      cmdInput.readOnly = true;
+      cmdInput.tabIndex = -1;
+    }
+  }
 
     return row;
 }

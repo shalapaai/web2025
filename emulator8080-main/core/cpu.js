@@ -38,6 +38,8 @@ class CPU8080 {
     this.memory = new Uint8Array(0x10000); // 64KB memory (0x0000-0xFFFF)
     this.memory.fill(0x00); // Заполняем NOP (00)
 
+    this.rowStates = {}; // ключ — индекс строки, значение — объект { readonly: bool, owner: number|null, highlighted: bool }
+
     this.onPCChange = () => {};
 
     this.isHalted = false; // Флаг остановки процессора
