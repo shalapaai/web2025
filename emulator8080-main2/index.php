@@ -3,53 +3,15 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Intel 8080</title>
+  <title>ОЗУ Intel 8080</title>
   <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
   <div class="container">
-    <div class="but-buf-container">
-      <div>
-        <button class="command-complete" id="commandComplete">Выполнить команду</button>
-        <button class="command-complete" id="cycleComplete">Выполнить такт</button>
-      </div>
-      <div>
-        <button class="prog-change" id="resetCompliting">Перезагрузить</button>
-        <button class="prog-change" id="clearAllCommands">Очистить</button>
-        <button class="prog-change" id="buttonView">Список команд</button>
-      </div>
-      
-      <div class="buf-container">
-        <div class="data-block" id="executionInfo">
-          <p id="currentCommandHex">Рег. команд: -</p>
-          <p id="currentCommandText">Д/Ш команд: -</p>
-        </div>
+    
 
-        <div class="data-block">
-          <p id="adrBuf">Буфер адреса: 0000</p>
-        </div>
-
-        <div class="data-block">
-          <p id="dataBuf">Буфер данных: 00</p>
-        </div>
-      </div>
-      <div>
-        <div class="data-block">
-          <p id="regBuf1">Буферный регистр 1: 00</p>
-        </div>
-        <div class="data-block">
-          <p id="regBuf2">Буферный регситр 2: 00</p>
-        </div>
-      </div>
-      <div class="cycle">
-        <div class="data-block">
-          <p id="currentCycle">Текущий такт: -</p>
-        </div>
-      </div>
-    </div>
-
-  <div class="inf-container">
+    <div>
       <table class="reg-table">
         <thead>
           <tr>
@@ -137,12 +99,42 @@
         </tbody>
       </table>
     </div>
+    <div class="but-buf-container">
+      <div>
+        <button class="command-complete" id="commandComplete">Выполнить команду</button>
+        <button class="command-complete" id="cycleComplete">Выполнить такт</button>
+      </div>
+      <div>
+        <button class="prog-change" id="resetCompliting">Перезагрузить</button>
+        <button class="prog-change" id="clearAllCommands">Очистить</button>
+        <button class="prog-change" id="buttonView">Список команд</button>
+      </div>
+      
+      <div class="buf-container">
+        <div class="data-block" id="executionInfo">
+          <p id="currentCommandHex">Рег. команд: -</p>
+          <p id="currentCommandText">Д/Ш команд: -</p>
+        </div>
+
+        <div class="data-block">
+          <p id="adrBuf">Буфер адреса: 0000</p>
+        </div>
+
+        <div class="data-block">
+          <p id="dataBuf">Буфер данных: 00</p>
+        </div>
+      </div>
+      <div>
+        <div class="data-block">
+          <p id="regBuf1">Буферный регистр 1: 00</p>
+        </div>
+        <div class="data-block">
+          <p id="regBuf2">Буферный регситр 2: 00</p>
+        </div>
+      </div>
+    </div>
 
   <div class="input-table-container">
-    <form class="searchPC">
-      <input type="text" class="searchPC">
-      <input type="submit">
-    </form>
     <div class="virtual-container" id="memoryContainer">
       <table class="input-table" id="memoryTable">
         <thead>
@@ -155,7 +147,6 @@
         <tbody id="memoryTableBody"></tbody>
       </table>
     </div>
-    
   </div>
 
   <div id="modalOverlay" class="modal-overlay opcode-table_hidden">
@@ -491,10 +482,10 @@
   </div>
 
   <script src="./core/opcode_map.js" defer></script>
-  <script src="./core/cpus.js" defer></script>
-  <script src="./core/main.js" defer></script>
-  <script src="./core/commands.js" defer></script>
-  <script src="./core/special_command.js" defer></script>
+  <script src="./core/cpu.js" defer></script>
+  <script src="./core/mains.js" defer></script>
+  <script src="./core/command.js" defer></script>
+  <script src="./core/special_commands.js" defer></script>
   <script src="./core/modal_window.js" defer></script>
 </body>
 

@@ -34,7 +34,7 @@ table {
 .input-table thead {
   position: sticky;
   top: 0;
-  z-index: 10;
+  /* z-index: 10; */
   background-color: #e9ecef;
 }
 
@@ -97,7 +97,7 @@ table {
 
 .readonly-row input {
   background-color: #cfcfcf;
-
+  cursor: not-allowed;
 }
 
 /* Подсветка текущей команды */
