@@ -81,6 +81,16 @@ class CPU8080 {
   this.onPCChange(this.registers.PC); 
 }
 
+// Добавляем метод для установки SP
+  setSP(value) {
+    this.registers.SP = value & 0xFFFF; // Обеспечиваем 16-битное значение
+  }
+
+  // Добавляем метод для получения SP
+  getSP() {
+    return this.registers.SP;
+  }
+
   reset() {
     for (let reg in this.registers) {
       this.registers[reg] = reg === 'SP' ? 0xFFFF : 0;
@@ -789,7 +799,7 @@ class CPU8080 {
               this.registers.Z = bytes[1]; // Младший байт
           } else {
               this.registers.W = bytes[2];
-              const newPC = ((this.registers.W << 8) | this.registers.Z) - 1;
+              const newPC = ((this.registers.W << 8) | this.registers.Z);
               this.setPC(newPC);
           }
           break;
@@ -991,12 +1001,12 @@ class CPU8080 {
         break;
     }
        // Автоматическое увеличение PC после выполнения команды
-    if (!this.isHalted && !isPartialExecution && 
-        !jumpOpcodes.includes(opcode) && 
-        !isSpecialCommand(opcode)) {
-        // Увеличиваем PC на длину команды
-        this.registers.PC += bytes.length;
-    }
+    // if (!this.isHalted && !isPartialExecution && 
+    //     !jumpOpcodes.includes(opcode) && 
+    //     !isSpecialCommand(opcode)) {
+    //     // Увеличиваем PC на длину команды
+    //     this.registers.PC += bytes.length;
+    // }
 
     return true;
     

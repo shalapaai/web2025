@@ -12,7 +12,7 @@
     
 
     <div>
-      <table class="reg-table">
+      <!-- <table class="reg-table">
         <thead>
           <tr>
             <th>Регистр</th>
@@ -65,7 +65,75 @@
             <th>0000</th>
           </tr>
         </tbody>
-      </table>
+      </table> -->
+
+      <table class="register-table">
+        <tr>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name">W</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name">Z</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="section-title">Регистры общего назначения (РОН)</td>
+        </tr>
+        <tr>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name">B</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name">C</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name">D</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name">E</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name">H</p>
+                    <p class="register-value">20</p>
+                </div>
+            </td>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name">L</p>
+                    <p class="register-value">10</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td id="programCounter" colspan="2" class="full-row">Указатель стека (УС): 2010</td>
+        </tr>
+        <tr>
+            <td id="stackPointer" colspan="2" class="full-row">Счётчик хранения (СК): 0000</td>
+        </tr>
+    </table>
 
       <table class="flags-table">
         <thead>

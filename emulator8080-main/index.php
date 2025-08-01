@@ -4,159 +4,194 @@
 <head>
   <meta charset="UTF-8">
   <title>Intel 8080</title>
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
 
 <body>
   <div class="container">
-    <div class="but-buf-container">
+    <div class="left-container">
+      <span class="border-label-left">Состояния</span>
+    <div class="cycle">
+      <div class="data-block">
+        <p id="currentCycle">Текущий такт: -</p>
+      </div>
+    </div>
+    <div class="data-container">
+      <div class="data-container1">
+        <div class="flags-indicator">
+            <div class="flag">
+                <div class="flag-name" data-flag='Z'>Z</div>
+                <div class="lamp"></div>
+            </div>
+            <div class="flag">
+                <div class="flag-name" data-flag='S'>S</div>
+                <div class="lamp"></div>
+            </div>
+            <div class="flag">
+                <div class="flag-name" data-flag='P'>P</div>
+                <div class="lamp"></div>
+            </div>
+            <div class="flag">
+                <div class="flag-name" data-flag='C'>C</div>
+                <div class="lamp"></div>
+            </div>
+            <div class="flag">
+                <div class="flag-name" data-flag='AC'>AC</div>
+                <div class="lamp"></div>
+            </div>
+        </div>
+        <div class="data-block">
+          <p>Буфер данных</p>
+          <p id="dataBuf">00</p>
+        </div>
+      </div>
+
+      <div class="data-container2">
+        <div class="data-block">
+          <p data-reg='A'>A</p>
+          <p>00</p>
+        </div>
+          <div class="data-block">
+          <p>Буф рег 1</p>
+          <p id="regBuf1">00</p>
+        </div>
+        <div class="data-block data-container2_currentCommandHex" id="executionInfo">
+          <p>Рег. команд</p>
+          <p id="currentCommandHex">-</p>
+        </div>
+      </div>
+
+      <div class="data-container3">
+        <div class="data-block">
+          <p>Буф рег 2</p>
+          <p id="regBuf2">00</p>
+        </div>
+        <div class="data-block data-container3_currentCommandText" id="executionInfo">
+          <p>Д/Ш команд</p>
+          <p id="currentCommandText">-</p>
+        </div>
+      </div>
+    </div>
+   
+  <div class="inf-container">
+      <table class="reg-table">
+        <tr>
+          <td colspan="2" class="full-row">Мультиплексор</td>
+        </tr>
+        <tr>
+          <td colspan="2" class="full-row">Регистры временного хранения</td>
+        </tr>
+        <tr>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name" data-reg='W'>W</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name" data-reg='Z'>Z</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="section-title">Регистры общего назначения (РОН)</td>
+        </tr>
+        <tr>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name" data-reg='B'>B</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name" data-reg='C'>C</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name" data-reg='D'>D</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name" data-reg='E'>E</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name" data-reg='H'>H</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+            <td>
+                <div class="register-cell">
+                    <p class="register-name" data-reg='L'>L</p>
+                    <p class="register-value">00</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td id="stackPointer" colspan="2" class="full-row">Указатель стека (УС): <span class="sp-value">FFFF</span></td>
+        </tr>
+        <tr>
+            <td id="programCounter" colspan="2" class="full-row">Счётчик команд (СК): <span class="pc-value">0000</span></td>
+        </tr>
+    </table>
+    <div class="data-block">
+      <p>Буфер адреса</p>
+      <p id="adrBuf">0000</p>
+    </div>
+  </div>
+  </div>
+      
+  <div class="right-container">
+    <div class="input-container">
+      <span class="border-label-right">Ячейка ОЗУ и её значение</span>
+      <div class="input-table-container">
+        <div class="virtual-container" id="memoryContainer">
+          <table class="input-table" id="memoryTable">
+            <thead>
+              <tr>
+                <th>Адрес</th>
+                <th>Машинный код</th>
+                <th>Команда</th>
+              </tr>
+            </thead>
+            <tbody id="memoryTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="searchPC">
+        <p>Найти ячейку ОЗУ</p>
+        <input class="searchPC__input" type="text">
+      </div>
+    </div>
+    <div class="buttons-container"> 
       <div>
+        <span class="border-label-right">Кнопки</span>
         <button class="command-complete" id="commandComplete">Выполнить команду</button>
         <button class="command-complete" id="cycleComplete">Выполнить такт</button>
       </div>
       <div>
-        <button class="prog-change" id="resetCompliting">Перезагрузить</button>
+        <button class="prog-change" id="resetCompliting">Старт</button>
         <button class="prog-change" id="clearAllCommands">Очистить</button>
-        <button class="prog-change" id="buttonView">Список команд</button>
-      </div>
-      
-      <div class="buf-container">
-        <div class="data-block" id="executionInfo">
-          <p id="currentCommandHex">Рег. команд: -</p>
-          <p id="currentCommandText">Д/Ш команд: -</p>
-        </div>
-
-        <div class="data-block">
-          <p id="adrBuf">Буфер адреса: 0000</p>
-        </div>
-
-        <div class="data-block">
-          <p id="dataBuf">Буфер данных: 00</p>
-        </div>
-      </div>
-      <div>
-        <div class="data-block">
-          <p id="regBuf1">Буферный регистр 1: 00</p>
-        </div>
-        <div class="data-block">
-          <p id="regBuf2">Буферный регситр 2: 00</p>
-        </div>
-      </div>
-      <div class="cycle">
-        <div class="data-block">
-          <p id="currentCycle">Текущий такт: -</p>
-        </div>
+        <button class="prog-change" id="buttonView">Команды</button>
       </div>
     </div>
-
-  <div class="inf-container">
-      <table class="reg-table">
-        <thead>
-          <tr>
-            <th>Регистр</th>
-            <th>Значение</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>W</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th>Z</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th>A</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th>B</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th>C</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th>D</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th>E</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th>H</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th>L</th>
-            <th>00</th>
-          </tr>
-          <tr>
-            <th id="stackPointer">Указатель стека</th>
-            <th>FFFF</th>
-          </tr>
-          <tr>
-            <th id="programCounter">Счетчик команд</th>
-            <th>0000</th>
-          </tr>
-        </tbody>
-      </table>
-
-      <table class="flags-table">
-        <thead>
-          <tr>
-            <th>Флаг</th>
-            <th>Значение</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>C</th>
-            <th>0</th>
-          </tr>
-          <tr>
-            <th>P</th>
-            <th>0</th>
-          </tr>
-          <tr>
-            <th>AC</th>
-            <th>0</th>
-          </tr>
-          <tr>
-            <th>Z</th>
-            <th>0</th>
-          </tr>
-          <tr>
-            <th>S</th>
-            <th>0</th>
-          </tr>
-
-        </tbody>
-      </table>
-    </div>
-
-  <div class="input-table-container">
-    <form class="searchPC">
-      <input type="text" class="searchPC">
-      <input type="submit">
-    </form>
-    <div class="virtual-container" id="memoryContainer">
-      <table class="input-table" id="memoryTable">
-        <thead>
-          <tr>
-            <th>Адрес</th>
-            <th>Машинный код</th>
-            <th>Команда</th>
-          </tr>
-        </thead>
-        <tbody id="memoryTableBody"></tbody>
-      </table>
-    </div>
-    
   </div>
+  </div>
+
+  <img class="arrow-image" src="arrows.png">
 
   <div id="modalOverlay" class="modal-overlay opcode-table_hidden">
     <div class="modal-content">
@@ -491,8 +526,8 @@
   </div>
 
   <script src="./core/opcode_map.js" defer></script>
-  <script src="./core/cpus.js" defer></script>
-  <script src="./core/main.js" defer></script>
+  <script src="./core/cpu.js" defer></script>
+  <script src="./core/mains.js" defer></script>
   <script src="./core/commands.js" defer></script>
   <script src="./core/special_command.js" defer></script>
   <script src="./core/modal_window.js" defer></script>

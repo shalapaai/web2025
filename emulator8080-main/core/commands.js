@@ -2,35 +2,56 @@ cpu.setHaltCallback(() => {
   return confirm("Процессор остановлен командой HLT.\nПродолжить выполнение?");
 });
 
+let previousRegisters = {...cpu.registers};
+let previousFlags = {...cpu.flags};
+let previousBuffers = {
+  bufReg1: cpu.bufReg1,
+  bufReg2: cpu.bufReg2,
+  adrBuf: 0,
+  dataBuf: 0
+};
+
 const resetCompliting = document.querySelector("#resetCompliting");
 
 const currentCommandHex = document.querySelector("#currentCommandHex");
 const currentCommandText = document.querySelector("#currentCommandText");
 
-const programCounter = document.querySelector("#programCounter").nextElementSibling;
+const programCounter = document.querySelector(".pc-value");
+const stackPointer = document.querySelector(".sp-value");
+
+console.log(programCounter);
 const adrBuf = document.querySelector("#adrBuf");
 const dataBuf = document.querySelector("#dataBuf");
 
-// Привязываем изменение PC к таблице
 cpu.onPCChange = (newPC) => {
-  
-  // Обновляем отображение PC в UI
-  programCounter.textContent = toHex(newPC, 4);
+  if (programCounter) {
+    programCounter.textContent = toHex(newPC, 4);
+  }
 };
 
-// Модифицируем обработчик кнопки reset
 resetCompliting.addEventListener("click", () => {
     cpu.reset();
-    cpu.resetBuffers(); // Сбрасываем буферные регистры и PC
-    updateUIFromCPU(); // Обновляем UI
+    cpu.resetBuffers();
+    updateUIFromCPU();
     resetExecutionState();
     cpu.setPC(0);
+    cpu.setSP(0xFFFF); // Устанавливаем начальное значение SP
     
-    // Обновляем отображение буферов в UI
-    document.querySelector("#regBuf1").textContent = `Буферный регистр 1: 00`;
-    document.querySelector("#regBuf2").textContent = `Буферный регистр 2: 00`;
-    document.querySelector("#adrBuf").textContent = `Буфер адреса: 0000`;
-    document.querySelector("#dataBuf").textContent = `Буфер данных: 00`;
+    // Обновляем отображение регистров и буферов
+    programCounter.textContent = "0000"; // PC в формате 0000
+    stackPointer.textContent = "FFFF";   // SP в формате FFFF
+    
+    document.querySelector("#regBuf1").textContent = '00';
+    document.querySelector("#regBuf2").textContent = '00';
+    document.querySelector("#adrBuf").textContent = '0000';
+    document.querySelector("#dataBuf").textContent = '00';
+    updateCycleDisplay(0);
+    
+    // Сбрасываем подсветку поиска
+    const highlighted = tableBody.querySelector('.highlighted-search');
+    if (highlighted) {
+        highlighted.classList.remove('highlighted-search');
+    }
 });
 
 function getCommandLengthForAddress(address) {
@@ -74,7 +95,6 @@ let executionState = {
 };
 
 // Функция сброса состояния
-// Функция сброса состояния выполнения
 function resetExecutionState() {
     executionState = {
         currentCycle: 0,
@@ -89,8 +109,8 @@ function resetExecutionState() {
         row.classList.remove("highlighted-command", "highlighted-argument");
     });
     
-    currentCommandHex.textContent = "Рег. команд: -";
-    currentCommandText.textContent = "Д/Ш команд: -";
+    currentCommandHex.textContent = "-";
+    currentCommandText.textContent = "-";
     updateCycleDisplay(0);
     
     // Очищаем подсвеченные состояния в rowStates
@@ -109,26 +129,24 @@ function getCommandBytes(row, length) {
     return bytes;
 }
 
-// При изменении счетчика команд в таблице обновляем PC процессора
 function updateProgramCounter(row) {
-  cpu.setPC(row);
-  programCounter.textContent = toHex(row, 4);
-  
-  // Прокручиваем к текущей команде
-  const rowElement = tableBody.querySelector(`tr[data-row="${row}"]`);
-  if (rowElement) {
-    rowElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+    cpu.setPC(row);
+    programCounter.textContent = toHex(row, 4);
+    
+    const rowElement = tableBody.querySelector(`tr[data-row="${row}"]`);
+    if (rowElement) {
+        rowElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
 // Функция для обновления буфера адреса
 function updateAddressBuffer(row) {
-    adrBuf.textContent = `Буфер адреса: ${toHex(row, 4)}`;
+    adrBuf.textContent = toHex(row, 4);
 }
 
 // Функция для обновления буфера данных
 function updateDataBuffer(hexValue) {
-    dataBuf.textContent = `Буфер данных: ${hexValue}`;
+    dataBuf.textContent = hexValue;
 }
 
 // Функция определения длины команды
@@ -282,12 +300,26 @@ function executeCurrentCommand(isPartialExecution = false) {
     const row = executionState.currentCommandRow;
     const commandLength = executionState.commandLength;
     const commandBytes = getCommandBytes(row, commandLength);
-    
     // Выполняем команду
     cpu.executeCommand(commandBytes, isPartialExecution);
     updateUIFromCPU();
     
     executionState.nextCommandRow = cpu.registers.PC;
+}
+
+// В функции getNextCommandAddress добавим проверку на специальные команды
+function getNextCommandAddress(row, commandLength) {
+    const opcode = cpu.readMemory(row - 1);
+    
+    // Для команд перехода используем текущий PC процессора
+    if (isJumpOpcode(opcode) || isSpecialCommand(opcode)) {
+        // Для специальных команд возвращаем PC, для остальных - row + длина
+        console.log(cpu.registers.PC);
+        return cpu.registers.PC;
+    }
+    
+    // Для обычных команд: текущий адрес + длина команды
+    return row + commandLength;
 }
 
 function isArgumentRow(rowIndex) {
@@ -342,8 +374,8 @@ function executeCycle() {
     // Обновляем UI на основе данных из памяти
     if (currentCycle === 4) {
         const fullHex = commandBytes.map(b => toHex(b, 2)).join(' ');
-        currentCommandHex.textContent = `Рег. команд: ${fullHex} (по адресу ${toHex(currentCommandRow, 4)})`;
-        currentCommandText.textContent = `Д/Ш команд: ${executionState.commandText}`;
+        currentCommandHex.textContent = fullHex;
+        currentCommandText.textContent = executionState.commandText;
     }
     
     // 3. Проверяем, является ли команда специальной
@@ -408,21 +440,38 @@ function handleCycle3(row) {
 
 function handleCycle4(row) {
     const fullHex = getFullCommandHex(row);
-    currentCommandHex.textContent = `Рег. команд: ${fullHex} (по адресу ${toHex(row, 4)})`;
-    currentCommandText.textContent = `Д/Ш команд: ${executionState.commandText}`;
+    currentCommandHex.textContent = fullHex;
+    currentCommandText.textContent = executionState.commandText;
     executionState.currentCycle = 5;
 }
 
+// function handleCycle5(row, length) {
+//     if (length === 1) {
+//         const opcode = parseInt(document.querySelector(`input[data-row="${row}"][data-col="val"]`)?.value || "00", 16);
+        
+//         updateBuffersForOpcode(opcode);
+//         console.log(cpu.registers.PC);
+//         executeCurrentCommand();
+
+//         updateCycleDisplay(5);
+        
+//         executionState.nextCommandRow = cpu.registers.PC;
+//         executionState.currentCycle = 0;
+//         executionState.currentCommandRow = -1;
+//     } else {
+//         updateProgramCounter(row + 1);
+//         executionState.currentCycle = 6;
+//     }
+// }
+
+// Исправленные функции обработки тактов
 function handleCycle5(row, length) {
     if (length === 1) {
         const opcode = parseInt(document.querySelector(`input[data-row="${row}"][data-col="val"]`)?.value || "00", 16);
-        
-        // Обновляем буферные регистры для всех команд (не только для специальных)
         updateBuffersForOpcode(opcode);
-        
         executeCurrentCommand();
-        
-        executionState.nextCommandRow = cpu.registers.PC;
+        updateCycleDisplay(5);
+        executionState.nextCommandRow = getNextCommandAddress(row, 1);
         executionState.currentCycle = 0;
         executionState.currentCommandRow = -1;
     } else {
@@ -431,10 +480,37 @@ function handleCycle5(row, length) {
     }
 }
 
+
 function handleCycle6(row) {
     updateAddressBuffer(row + 1);
     executionState.currentCycle = 7;
 }
+
+// function handleCycle7(row, length) {
+//     const argInput = document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`);
+//     const argValue = parseInt(argInput?.value || "00", 16);
+//     updateDataBuffer(argInput?.value || "00");
+    
+//     if (length === 2) {
+//         const opcode = parseInt(document.querySelector(`input[data-row="${row}"][data-col="val"]`)?.value || "00", 16);
+        
+//         // Для команд с непосредственным операндом обновляем буферы
+//         if (shouldUpdateBuffersForImmediateOpcode(opcode)) {
+//             updateBuffersForImmediateOpcode(opcode, argValue);
+//         }
+        
+//         executeCurrentCommand();
+
+//         updateCycleDisplay(7);
+
+//         executionState.nextCommandRow = cpu.registers.PC - 1;
+//         executionState.currentCycle = 0;
+//         executionState.currentCommandRow = -1;
+//     } else if (length === 3) {
+//         executeCurrentCommand(true);
+//         executionState.currentCycle = 8;
+//     }
+// }
 
 function handleCycle7(row, length) {
     const argInput = document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`);
@@ -443,14 +519,12 @@ function handleCycle7(row, length) {
     
     if (length === 2) {
         const opcode = parseInt(document.querySelector(`input[data-row="${row}"][data-col="val"]`)?.value || "00", 16);
-        
-        // Для команд с непосредственным операндом обновляем буферы
         if (shouldUpdateBuffersForImmediateOpcode(opcode)) {
             updateBuffersForImmediateOpcode(opcode, argValue);
         }
-        
         executeCurrentCommand();
-        executionState.nextCommandRow = cpu.registers.PC - 1;
+        updateCycleDisplay(7);
+        executionState.nextCommandRow = getNextCommandAddress(row, 2);
         executionState.currentCycle = 0;
         executionState.currentCommandRow = -1;
     } else if (length === 3) {
@@ -458,10 +532,10 @@ function handleCycle7(row, length) {
         executionState.currentCycle = 8;
     }
 }
+
 function handleCycle8(row) {
     updateProgramCounter(row + 1);
     executionState.currentCycle = 9;
-    console.log(cpu.registers.PC);
 }
 
 function handleCycle9(row) {
@@ -469,18 +543,31 @@ function handleCycle9(row) {
     executionState.currentCycle = 10;
 }
 
+// function handleCycle10(row, length) {
+//     const argInput = document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`);
+//     updateDataBuffer(argInput?.value || "00");
+
+//     executeCurrentCommand(false);
+//     const isJumpCommand = isJumpOpcode(cpu.readMemory(row));
+
+//     updateCycleDisplay(10);
+
+//     if (isJumpCommand) {
+//         executionState.nextCommandRow = cpu.registers.PC;
+//     } else {
+//         executionState.nextCommandRow = cpu.registers.PC + 1;
+//     }
+    
+//     executionState.currentCycle = 0;
+//     executionState.currentCommandRow = -1;
+// }
+
 function handleCycle10(row, length) {
     const argInput = document.querySelector(`input[data-row="${row + 1}"][data-col="val"]`);
     updateDataBuffer(argInput?.value || "00");
-
     executeCurrentCommand(false);
-    const isJumpCommand = isJumpOpcode(cpu.readMemory(row));
-    if (isJumpCommand) {
-        executionState.nextCommandRow = cpu.registers.PC;
-    } else {
-        executionState.nextCommandRow = cpu.registers.PC + 1;
-    }
-    
+    updateCycleDisplay(10);
+    executionState.nextCommandRow = getNextCommandAddress(row, 2);
     executionState.currentCycle = 0;
     executionState.currentCommandRow = -1;
 }
@@ -645,28 +732,106 @@ function getHighlightTarget(currentCycle, currentCommandRow, commandLength) {
 }
 
 function updateUIFromCPU() {
-    // Обновляем регистры
-    document.querySelectorAll(".reg-table th").forEach(th => {
-        const name = th.textContent.trim();
-        const valueCell = th.nextElementSibling;
-        
-        if (cpu.registers[name] !== undefined) {
-            valueCell.textContent = toHex(cpu.registers[name], name === 'SP' || name === 'PC' ? 4 : 2);
-        }
+    // Обновляем регистры в новой табличной структуре
+    const registerElements = {
+        'W': document.querySelector(".register-cell .register-name[data-reg='W']")?.nextElementSibling,
+        'Z': document.querySelector(".register-cell .register-name[data-reg='Z']")?.nextElementSibling,
+        'B': document.querySelector(".register-cell .register-name[data-reg='B']")?.nextElementSibling,
+        'C': document.querySelector(".register-cell .register-name[data-reg='C']")?.nextElementSibling,
+        'D': document.querySelector(".register-cell .register-name[data-reg='D']")?.nextElementSibling,
+        'E': document.querySelector(".register-cell .register-name[data-reg='E']")?.nextElementSibling,
+        'H': document.querySelector(".register-cell .register-name[data-reg='H']")?.nextElementSibling,
+        'L': document.querySelector(".register-cell .register-name[data-reg='L']")?.nextElementSibling,
+        'A': document.querySelector("[data-reg='A']")?.nextElementSibling
+    };
+
+    document.querySelectorAll('.changed-value').forEach(el => {
+        el.classList.remove('changed-value');
     });
+
+    for (const [reg, element] of Object.entries(registerElements)) {
+        if (element && cpu.registers[reg] !== undefined) {
+        const currentValue = cpu.registers[reg];
+        const prevValue = previousRegisters[reg];
+        
+        if (currentValue !== prevValue) {
+            element.textContent = toHex(currentValue, 2);
+            element.classList.add('changed-value');
+        }
+        }
+    }
+
+    if (stackPointer) {
+        const currentSP = cpu.registers.SP;
+        if (currentSP !== previousRegisters.SP) {
+        stackPointer.textContent = toHex(currentSP, 4);
+        stackPointer.classList.add('changed-value');
+        }
+    }
     
-    // Обновляем флаги
-    document.querySelectorAll(".flags-table th").forEach(th => {
-        const flag = th.textContent.trim();
-        if (cpu.flags[flag] !== undefined) {
-            th.nextElementSibling.textContent = cpu.flags[flag]; 
+    if (programCounter) {
+        const currentPC = cpu.registers.PC;
+        if (currentPC !== previousRegisters.PC) {
+        programCounter.textContent = toHex(currentPC, 4);
+        programCounter.classList.add('changed-value');
+        }
+    }
+
+    // Обновляем флаги (лампочки)
+    const flagElements = document.querySelectorAll('.flag');
+    
+    flagElements.forEach(flagElement => {
+        const flagNameElement = flagElement.querySelector('.flag-name');
+        const lampElement = flagElement.querySelector('.lamp');
+        
+        if (flagNameElement && lampElement) {
+            const flagName = flagNameElement.getAttribute('data-flag');
+            if (flagName && cpu.flags[flagName] !== undefined) {
+                if (cpu.flags[flagName]) {
+                    lampElement.classList.add('on');
+                } else {
+                    lampElement.classList.remove('on');
+                }
+            }
         }
     });
 
     // Обновляем буферные регистры
-        document.querySelector("#regBuf1").textContent = `Буферный регистр 1: ${toHex(cpu.bufReg1, 2)}`;
-        document.querySelector("#regBuf2").textContent = `Буферный регистр 2: ${toHex(cpu.bufReg2, 2)}`;
+    document.querySelector("#regBuf1").textContent = toHex(cpu.bufReg1, 2);
+    document.querySelector("#regBuf2").textContent = toHex(cpu.bufReg2, 2);
 
-    const stackPointerElement = document.querySelector("#stackPointer").nextElementSibling;
-    stackPointerElement.textContent = toHex(cpu.registers.SP, 4);
+    if (cpu.bufReg1 !== previousBuffers.bufReg1) {
+        regBuf1.textContent = toHex(cpu.bufReg1, 2);
+        regBuf1.classList.add('changed-value');
+    }
+    
+    if (cpu.bufReg2 !== previousBuffers.bufReg2) {
+        regBuf2.textContent = toHex(cpu.bufReg2, 2);
+        regBuf2.classList.add('changed-value');
+    }
+
+    // Подсвечиваем измененные буферы адреса и данных
+    const currentAdrBuf = parseInt(adrBuf.textContent, 16) || 0;
+    const currentDataBuf = parseInt(dataBuf.textContent, 16) || 0;
+    
+    if (currentAdrBuf !== previousBuffers.adrBuf) {
+        adrBuf.classList.add('changed-value');
+    }
+    
+    if (currentDataBuf !== previousBuffers.dataBuf) {
+        dataBuf.classList.add('changed-value');
+    }
+
+    // Обновляем отображение текущего такта
+    updateCycleDisplay(cpu.currentCycle);
+
+    // Сохраняем текущие значения для следующего сравнения
+    previousRegisters = {...cpu.registers};
+    previousFlags = {...cpu.flags};
+    previousBuffers = {
+        bufReg1: cpu.bufReg1,
+        bufReg2: cpu.bufReg2,
+        adrBuf: currentAdrBuf,
+        dataBuf: currentDataBuf
+    };
 }

@@ -253,10 +253,10 @@ clearAllCommandsBtn.addEventListener("click", () => {
   cpu.resetBuffers(); // Сбрасываем буферные регистры и PC
   
   // Обновляем отображение буферов в UI
-  document.querySelector("#regBuf1").textContent = `Буферный регистр 1: 00`;
-  document.querySelector("#regBuf2").textContent = `Буферный регистр 2: 00`;
-  document.querySelector("#adrBuf").textContent = `Буфер адреса: 0000`;
-  document.querySelector("#dataBuf").textContent = `Буфер данных: 00`;
+  document.querySelector("#regBuf1").textContent = `00`;
+  document.querySelector("#regBuf2").textContent = `00`;
+  document.querySelector("#adrBuf").textContent = `0000`;
+  document.querySelector("#dataBuf").textContent = `00`;
   
   // Очищаем все строки таблицы
   for (let i = 0; i < numRows; i++) {
@@ -685,36 +685,50 @@ function updateTableRow(address) {
 }
 
 // Обработчик поиска адреса
-const searchForm = document.querySelector('.searchPC');
-const searchInput = searchForm.querySelector('input[type="text"]');
+const searchInput = document.querySelector('.searchPC input[type="text"]');
 
-searchForm.addEventListener('submit', function(e) {
-    e.preventDefault(); // Предотвращаем стандартную отправку формы
-    
-    const searchValue = searchInput.value.trim();
-    if (!searchValue) return; // Если поле пустое, ничего не делаем
-    
-    // Парсим введенное значение (поддерживаем hex и decimal)
-    let address;
-    if (searchValue.startsWith('0x')) {
-        // Hex значение с префиксом 0x
-        address = parseInt(searchValue.substring(2), 16);
-    } else if (/^[0-9A-Fa-f]+$/.test(searchValue)) {
-        // Hex значение без префикса
-        address = parseInt(searchValue, 16);
-    } else {
-        // Decimal значение
-        address = parseInt(searchValue, 10);
+// Разрешаем ввод только hex-символов (0-9, A-F)
+searchInput.addEventListener('input', function(e) {
+    this.value = this.value.toUpperCase().replace(/[^0-9A-F]/g, '');
+});
+
+// Обработчик нажатия клавиши в поле поиска
+searchInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        const searchValue = this.value.trim();
+        if (!searchValue) return;
+        
+        try {
+            // Парсим hex-значение
+            const address = parseInt(searchValue, 16);
+            
+            if (isNaN(address)) {
+                throw new Error('Invalid hex number');
+            }
+            
+            // Ограничиваем адрес 16-битным диапазоном
+            const clampedAddress = Math.max(0, Math.min(0xFFFF, address));
+            
+            // Прокручиваем к адресу
+            scrollToAddress(clampedAddress);
+            
+            // Фокусируемся на поле значения
+            setTimeout(() => {
+                const row = tableBody.querySelector(`tr[data-row="${clampedAddress}"]`);
+                if (row) {
+                    const valInput = row.querySelector('input[data-col="val"]');
+                    if (valInput) {
+                        valInput.focus();
+                        valInput.select();
+                    }
+                }
+            }, 500);
+            
+        } catch (error) {
+            alert('Некорректный адрес! Введите hex-значение от 0000 до FFFF');
+            console.error('Invalid address input:', error);
+        }
     }
-    
-    // Проверяем валидность адреса
-    if (isNaN(address) || address < 0 || address > 0xFFFF) {
-        alert('Некорректный адрес! Введите значение от 0 до 65535 (0xFFFF)');
-        return;
-    }
-    
-    // Прокручиваем к нужной строке
-    scrollToAddress(address);
 });
 
 function scrollToAddress(address) {
@@ -722,9 +736,12 @@ function scrollToAddress(address) {
     const rowHeight = ROW_HEIGHT;
     const targetPosition = address * rowHeight;
     
+    // Рендерим строки вокруг целевого адреса
+    renderRowsAround(address);
+    
     // Плавная прокрутка
     container.scrollTo({
-        top: targetPosition - container.clientHeight / 2,
+        top: targetPosition - container.clientHeight / 3,
         behavior: 'smooth'
     });
     
@@ -732,11 +749,41 @@ function scrollToAddress(address) {
     highlightRow(address);
 }
 
+function renderRowsAround(centerAddress) {
+    const container = document.getElementById('memoryContainer');
+    const tableBody = document.getElementById('memoryTableBody');
+    
+    const visibleStart = Math.max(0, centerAddress - BUFFER_ROWS * 2);
+    const visibleEnd = Math.min(totalRows, centerAddress + BUFFER_ROWS * 2);
+    
+    // Удаляем только те строки, которые далеко от целевого адреса
+    const existingRows = tableBody.querySelectorAll('.virtual-row');
+    existingRows.forEach(row => {
+        const rowIndex = parseInt(row.dataset.row);
+        if (rowIndex < visibleStart || rowIndex > visibleEnd) {
+            saveRowStateBeforeRemove(rowIndex, row);
+            row.remove();
+        }
+    });
+    
+    // Добавляем недостающие строки
+    for (let i = visibleStart; i < visibleEnd; i++) {
+        if (!tableBody.querySelector(`tr[data-row="${i}"]`)) {
+            const row = createTableRow(i);
+            row.style.position = 'absolute';
+            row.style.top = `${i * ROW_HEIGHT}px`;
+            tableBody.appendChild(row);
+            restoreRowState(i, row);
+        }
+    }
+}
+
 function highlightRow(address) {
     // Убираем предыдущую подсветку
-    tableBody.querySelectorAll('.highlighted-search').forEach(row => {
-        row.classList.remove('highlighted-search');
-    });
+    const prevHighlighted = tableBody.querySelector('.highlighted-search');
+    if (prevHighlighted) {
+        prevHighlighted.classList.remove('highlighted-search');
+    }
     
     // Находим нужную строку
     const row = tableBody.querySelector(`tr[data-row="${address}"]`);
